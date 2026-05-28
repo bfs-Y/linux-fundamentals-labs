@@ -101,3 +101,21 @@ The detect script flags processes running from /tmp and catches
 sshd running as a non-root user. The hardening script locks /tmp
 with noexec, nosuid and nodev. Once remounted, the attack fails
 at launch — the binary simply cannot execute from /tmp.
+
+## Reverse shell simulation and incident response
+
+Simulated a reverse shell using bash -i redirected to /dev/null.
+Practiced the full incident response cycle before killing the process.
+
+The process showed up in ps with T state after SIGTERM — already stopped
+so the signal had no effect. Required SIGKILL to finish it.
+
+Key findings during investigation:
+- lsof showed stdout and stderr going to /dev/null — not a real terminal
+- ss showed no network connections — safe simulation only
+- pstree confirmed spawned from bash, not a system service
+- Found suspicious file legitimate_job in /etc/cron.d/ — empty but suspicious
+
+Lesson: always observe and check persistence before killing.
+Killing first destroys evidence and alerts the attacker.
+Killing a T state process requires SIGKILL not SIGTERM.
