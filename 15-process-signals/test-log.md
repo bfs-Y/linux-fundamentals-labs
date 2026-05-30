@@ -119,3 +119,31 @@ Key findings during investigation:
 Lesson: always observe and check persistence before killing.
 Killing first destroys evidence and alerts the attacker.
 Killing a T state process requires SIGKILL not SIGTERM.
+
+## systemd and signals, strace and lsof
+
+Wrote a real systemd unit file for a Python web app.
+Tested automatic restart with Restart=on-failure — killed
+the process with SIGKILL and watched systemd bring it back
+with a new PID in under 5 seconds.
+
+Built a systemd timer to restart the service nightly at 2am.
+Learned that Persistent=true prevents missed runs during
+maintenance windows.
+
+Read the nginx unit file and understood the three signal
+escalation levels — SIGQUIT first, then SIGTERM, then SIGKILL
+with KillMode=mixed sending SIGKILL to the entire process group.
+
+Learned Type=forking exists because systemd needs to know
+the original process will exit after forking — without it
+systemd thinks the service crashed and restarts in a loop.
+
+strace attached to a live Python server. Watched poll()
+repeating every 500ms while idle — healthy waiting behavior.
+Sent a curl request and watched accept4() fire — the full
+HTTP connection lifecycle visible in system calls.
+
+Combined strace and lsof — strace shows which fd is slow,
+lsof identifies what that fd actually is. Together they
+pinpoint bottlenecks that never appear in application logs.
