@@ -1,0 +1,31 @@
+DRILL 01 — Network Interface Reading and Control
+Topic: Interfaces
+Repeat daily until instant.
+
+--- READ ---
+ip a                          # all interfaces, addresses, states
+ip a show enp1s0              # single interface
+ip link show enp1s0           # physical layer only — no IP info
+
+--- WHAT TO LOOK FOR ---
+UP,LOWER_UP = cable in, interface up, traffic possible
+UP only     = interface up but no physical signal (cable out)
+DOWN        = interface administratively down
+inet line   = has IP address
+no inet     = no IP — DHCP failed or not configured
+
+--- BREAK ---
+sudo ip link set enp1s0 down  # kill the interface
+ip a show enp1s0              # confirm DOWN, no inet
+
+--- FIX ---
+sudo ip link set enp1s0 up    # bring it back
+sleep 3
+ip a show enp1s0              # confirm UP, inet returned
+
+--- PRODUCTION SCENARIO ---
+App unreachable. SSH works from console.
+First command: ip a
+Look for: is your main interface DOWN? is inet missing?
+If DOWN: ip link set up
+If no inet: DHCP failed — check dhclient or NetworkManager
