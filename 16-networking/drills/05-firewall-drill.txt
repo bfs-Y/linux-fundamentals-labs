@@ -41,3 +41,19 @@ Step 2: identify the correct source range your legitimate traffic actually needs
 Step 3: delete the wide-open rule, add the properly scoped one
 Step 4: verify at BOTH layers — ufw status AND raw iptables — never trust one view alone
 Step 5: test the live behavior, don't just read the config
+
+--- ENABLE / DISABLE: READ-ONLY AWARENESS, NO DESTRUCTIVE TEST ---
+sudo systemctl status ufw --no-pager     # confirms ufw is set to start on boot (enabled/disabled at systemd level)
+sudo ufw enable                          # activates rule enforcement
+sudo ufw disable                         # DANGER: removes ALL enforcement, does not just "open SSH"
+
+CRITICAL MISCONCEPTION TO AVOID:
+Disabling ufw does NOT cut off your current session. Existing connections (ESTABLISHED state)
+keep flowing because there's no rule left to block anything. Disabling ufw means EVERYTHING
+becomes unconditionally allowed — every port, every service, silently. Nothing visibly breaks,
+which is exactly why this is dangerous: no immediate symptom, but all protection is gone.
+
+NEVER run `ufw disable` on a production box without:
+1. Confirming what other protection exists (security groups, network ACLs, segmentation)
+2. A clear, time-boxed reason and a plan to re-enable
+3. Verification immediately after re-enabling that prior rules are intact
