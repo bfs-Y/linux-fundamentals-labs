@@ -1,0 +1,30 @@
+DRILL 02 — Routing Table Reading and Recovery
+Topic: Routing
+Repeat daily until instant.
+
+--- READ ---
+ip route show                 # full route table
+ip route get 8.8.8.8          # which route would be used for a specific destination
+
+--- WHAT TO LOOK FOR ---
+default via X dev Y     = the gateway/exit route for anything not matched locally
+A.B.C.0/24 dev Y         = local subnet, no gateway needed, direct delivery
+linkdown on a route      = the interface for that route is currently down
+
+--- BREAK ---
+sudo ip route del default     # remove the exit route
+ip route show                 # confirm default is gone
+ping -c 2 192.168.122.1       # local traffic still works
+curl -s --max-time 3 http://8.8.8.8   # internet traffic fails — no route out
+
+--- FIX ---
+sudo ip route add default via 192.168.122.1 dev enp1s0
+ip route show                 # confirm default route restored
+ping -c 2 8.8.8.8              # confirm internet traffic restored
+
+--- PRODUCTION SCENARIO ---
+App can reach other services on the same subnet but not anything external.
+First command: ip route show
+Look for: is the default route missing or pointing somewhere wrong?
+If missing: add it back with the correct gateway
+If wrong gateway: delete and re-add with the correct one
