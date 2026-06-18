@@ -1,0 +1,35 @@
+DRILL 03 — DNS Resolution and Failure Diagnosis
+Topic: DNS
+Repeat daily until instant.
+
+--- READ ---
+cat /etc/resolv.conf       # what DNS server is configured (stub: 127.0.0.53)
+resolvectl status          # real upstream DNS server in use
+dig google.com             # full resolution trace + which server answered + query time
+
+--- WHAT TO LOOK FOR ---
+Query time: 0 msec   = cached answer, not a real network round trip
+Query time: Xms      = real round trip to a real server
+SERVER: line in dig  = which resolver actually answered
+"Temporary failure in name resolution" = DNS totally broken, no answer at all
+ping <name> hangs forever  = DNS resolved but something else is wrong (slow/dead upstream)
+ping <IP> works, ping <name> fails = isolates the problem to DNS specifically, not routing
+
+--- BREAK ---
+sudo resolvectl revert enp1s0     # strips DNS config from interface
+resolvectl status                 # confirm "Current Scopes: none"
+ping google.com                   # confirm "Temporary failure in name resolution"
+ping 8.8.8.8                      # confirm raw IP still works — proves it's DNS, not network
+
+--- FIX ---
+sudo systemctl restart systemd-resolved   # force fresh DHCP DNS pickup
+resolvectl status                          # confirm DNS server returned
+ping google.com                            # confirm resolution works
+
+--- PRODUCTION SCENARIO ---
+App can't reach external API. Logs show nothing useful.
+Step 1: ping <api-ip-if-known>     — does raw connectivity work?
+Step 2: ping <api-hostname>        — does the name resolve?
+If IP works but hostname doesn't: DNS is your problem, not the network.
+Check: /etc/resolv.conf, resolvectl status, dig <hostname>
+Fix: restart systemd-resolved, or check upstream DNS server health directly with dig @<server>
