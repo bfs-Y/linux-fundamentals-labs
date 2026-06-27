@@ -57,3 +57,36 @@ NEVER run `ufw disable` on a production box without:
 1. Confirming what other protection exists (security groups, network ACLs, segmentation)
 2. A clear, time-boxed reason and a plan to re-enable
 3. Verification immediately after re-enabling that prior rules are intact
+
+--- NAT / MASQUERADE: WHY CONTAINER TRAFFIC CAN REACH THE INTERNET AT ALL ---
+
+CONCEPT:
+NAT (Network Address Translation) rewrites the IP address in a packet as it crosses a
+device, so two networks that couldn't otherwise talk directly still can. Same thing your
+home router does for every device on your private network reaching the real internet.
+MASQUERADE is the dynamic variant — used when the rewriting device doesn't have one fixed
+known IP to use, so it figures out the correct source address automatically per-interface.
+
+THE MECHANISM:
+A container's private IP (e.g. 172.17.0.2) means nothing outside this machine. When it sends
+a packet to the real internet, MASQUERADE rewrites the source to the host's real IP and a
+chosen port, and tracks that mapping in the connection tracking table (ctstate) you've already
+read in iptables output all module. When the reply comes back addressed to that host IP/port,
+the kernel looks up the tracking table and hands it back to the correct container.
+
+READ:
+sudo iptables -t nat -L -n -v | grep MASQUERADE   # the actual NAT rule, with hit counters
+
+PROVE IT (hands-on, not just reading):
+1. sudo docker inspect <container> | grep IPAddress     # note the container's private IP
+2. sudo tcpdump -i enp1s0 -n host <some-real-destination-ip>   # capture on the REAL interface
+3. sudo docker exec <container> curl http://example.com         # trigger traffic from inside
+4. Read the capture: source IP should be the HOST's real IP, NOT the container's private IP
+5. sudo iptables -t nat -L -n -v | grep MASQUERADE   # confirm packet/byte counters increased
+
+KEY LESSON:
+The container believes it's talking directly to example.com as 172.17.0.2.
+example.com believes it's talking to your host's real IP.
+Both are correct from their own point of view — NAT is the invisible translator making
+both versions of the truth simultaneously valid. This is not theoretical; it's provable
+with tcpdump and a non-zero counter, the same evidence standard as every other topic.
