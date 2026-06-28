@@ -39,3 +39,44 @@ Step 3: look for SYN-ACK/echo-reply coming back
 Step 4: state precisely what the evidence shows — "request left, no reply returned" —
         do NOT overclaim "it never reached them," only claim what you can prove from your side
 Step 5: if you need to prove exactly where it died, you need a capture on the receiving end too
+
+--- BANNER GRABBING: WHAT A SERVICE VOLUNTEERS BEFORE ANY LOGIN ---
+
+CONCEPT:
+A banner is information a service announces unprompted, the instant a connection opens,
+before any authentication or real interaction. Pure reconnaissance for an attacker — zero
+exploitation needed, the service hands it over for free.
+
+GRAB AN SSH BANNER:
+echo "" | nc -w 2 localhost 22
+Reveals: exact SSH implementation, version, and (on Ubuntu) the distro patch suffix.
+Why it matters: a published vulnerability for a specific version gives attackers a
+pre-built target list just by scanning for this exact string.
+
+GRAB AN HTTP/nginx BANNER:
+curl -I http://localhost
+Look at the "Server:" header. Default nginx reveals full version + OS in this header.
+
+MITIGATION — nginx (config-controllable):
+server_tokens off;   in /etc/nginx/nginx.conf
+Removes version number from the Server header. Verify with: curl -I, check Server: line.
+Always back up config first, test with `nginx -t`, then reload — never edit blind.
+
+MITIGATION — SSH (PARTIALLY controllable, honest limitation):
+VersionAddendum none   in /etc/ssh/sshd_config
+This does NOT remove the core "SSH-2.0-OpenSSH_X.X" string — that's part of the protocol
+itself. On Ubuntu specifically, it also does NOT remove the distro suffix
+(e.g. "Ubuntu-3ubuntu13.16") — that's compiled into the binary at package build time,
+not something sshd_config can reach. Verified directly: even with VersionAddendum
+correctly set and confirmed active via `sudo sshd -T`, the banner is unchanged.
+
+REAL LESSON: not everything a service leaks is fixable from its config file. Some
+information is baked in at compile time. The professional response isn't "configure it
+away" when that's not possible — it's knowing the limitation exists and compensating
+elsewhere: stay patched, scope access tightly with firewall rules (Topic 6), don't expose
+SSH to the internet unnecessarily. A banner you can't hide is mitigated by reducing who
+can reach it and ensuring the version itself has no known exploitable vulnerabilities.
+
+VERIFY CURRENT LIVE CONFIG (not just the file on disk):
+sudo sshd -T | grep -i versionaddendum
+This shows what's actually loaded and active right now, not what the file claims.
