@@ -80,3 +80,58 @@ can reach it and ensuring the version itself has no known exploitable vulnerabil
 VERIFY CURRENT LIVE CONFIG (not just the file on disk):
 sudo sshd -T | grep -i versionaddendum
 This shows what's actually loaded and active right now, not what the file claims.
+
+--- SAVING CAPTURES TO DISK (pcap) AND READING THEM BACK ---
+
+WHY IT MATTERS:
+Live tcpdump output is gone the moment it scrolls past. Real investigations happen AFTER
+an incident — you need traffic SAVED to disk so you can read it as many times as needed,
+the same way a security camera needs to record, not just display a live feed.
+
+SAVE A CAPTURE:
+sudo tcpdump -i <interface> -n tcp port <port> -w ~/capture.pcap &
+disown
+sleep 2                              # confirm it's actually running before triggering traffic
+ls -lh ~/capture.pcap                # should be non-zero / growing once traffic occurs
+sudo pkill tcpdump                   # stop the capture when done
+
+READ A SAVED CAPTURE BACK:
+sudo tcpdump -r ~/capture.pcap -n              # read entire file
+sudo tcpdump -r ~/capture.pcap -n -c 15         # read just the first N packets, reliably
+                                                  # (piping to `head` can throw "Broken pipe" —
+                                                  # harmless, but use -c instead for clean output)
+
+--- REAL GOTCHA: SELF-DIRECTED TRAFFIC USES LOOPBACK, NOT THE PHYSICAL INTERFACE ---
+SSH'ing to your OWN machine's own IP (e.g. ssh user@<this-machine's-own-ip>) does NOT
+necessarily travel through enp1s0. It can resolve entirely through `lo`, the loopback
+interface, never touching the physical NIC at all — even though you typed a "real" IP,
+not 127.0.0.1. Verified directly: capturing on enp1s0 caught ZERO packets for a self-
+directed SSH session; capturing the identical traffic on `lo` caught everything.
+LESSON: when traffic seems to "disappear," check whether you're watching the right
+interface — self-traffic and loopback-routed traffic are easy to miss if you assume
+the physical interface sees everything.
+
+--- REAL GOTCHA: ONE PCAP FILE CAN CONTAIN MULTIPLE UNRELATED SESSIONS ---
+A continuously running capture doesn't separate connections for you — multiple SSH
+attempts (including failed ones) can all land in the same file, distinguishable only
+by timestamp and by tracking SYN/FIN boundaries per conversation. Don't assume "the
+traffic in this file" means one clean session — check timestamps and connection
+boundaries before drawing conclusions from a shared capture file.
+
+--- REAL GOTCHA: CAPTURE TIMING CAN MISS THE TRUE START OF A CONNECTION ---
+If a connection's handshake (SYN/SYN-ACK/ACK) completes in the brief window before or
+exactly as tcpdump starts, you can genuinely miss it — even with a deliberate delay
+before triggering traffic. The first packet you see might already be mid-handshake or
+mid-session. LESSON for real investigations: monitoring that starts even slightly late
+can permanently lose the chance to see how a connection began. Continuous, always-on
+capture (not just "start it when I think something's about to happen") is the only way
+to guarantee you see a connection's true beginning.
+
+--- WHAT ENCRYPTED SSH TRAFFIC LOOKS LIKE ON THE WIRE ---
+After the initial handshake, SSH traffic is uniform-looking, small (often ~36 bytes),
+rapid-fire packets in both directions — this is the encrypted keystroke-by-keystroke
+rhythm of an interactive session. No readable usernames, passwords, or commands are
+visible — that's the actual security boundary SSH provides, visible by its absence in
+the capture. A larger packet near the very start (e.g. ~124 bytes) is typically the
+key exchange/encryption negotiation, before the connection settles into small uniform
+packets.
