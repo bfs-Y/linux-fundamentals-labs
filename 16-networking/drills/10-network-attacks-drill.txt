@@ -1,3 +1,37 @@
+--- LAYER 2 FOUNDATION: ARP POISONING ---
+
+Before Evil Twin (WiFi), the wired equivalent is ARP poisoning.
+Same goal: get between victim and gateway. Different mechanism.
+
+HOW IT WORKS:
+1. Attacker sends unsolicited ARP reply to victim:
+   "192.168.122.1 is-at AA:BB:CC:DD:EE:FF" (attacker's MAC)
+2. Victim updates ARP cache — no verification, no authentication
+3. All victim traffic now flows to attacker instead of gateway
+4. Attacker forwards to real gateway — victim notices nothing
+
+DETECT IT:
+ip neigh show | grep 192.168.122.1
+Compare MAC against known legitimate gateway MAC.
+Unexpected MAC = poisoned cache.
+
+VERIFY LEGITIMATE GATEWAY MAC:
+ip neigh show
+Expected: 52:54:00:89:4f:85
+
+CAPTURE ARP TRAFFIC:
+sudo tcpdump -i enp1s0 -n arp
+
+FLUSH POISONED CACHE:
+sudo ip neigh flush all
+
+CONNECTION TO EVIL TWIN:
+Evil Twin = ARP poisoning at WiFi layer.
+Same attack, different medium.
+Attacker gets in position → DNS spoofing → SSL stripping.
+ARP poisoning is how "in position" happens on wired networks.
+
+
 DRILL 10 — Network Attacks: Evil Twin, DNS Spoofing, SSL Stripping
 Topic: Network Attacks
 Repeat until the full attack chain reasoning is automatic.
