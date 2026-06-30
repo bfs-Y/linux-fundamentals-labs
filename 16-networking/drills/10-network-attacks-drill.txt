@@ -94,3 +94,50 @@ Investigate, don't assume:
    (Evil Twin)
 Each answer points to a different root cause and a different fix — don't guess,
 verify which link in the chain actually failed.
+
+--- LAYER 2 ADDITION: ARP POISONING (the layer beneath DNS spoofing) ---
+
+CONCEPT:
+Before a machine can send a packet to an IP on its local network, it needs to know
+that IP's MAC (hardware) address — this mapping lives in the ARP cache. ARP poisoning
+means injecting a FAKE mapping, redirecting traffic at the hardware-address layer,
+even lower-level than DNS spoofing.
+
+CHECK CURRENT ARP CACHE:
+ip neigh show | grep <gateway-ip>
+
+INJECT A FAKE ENTRY (simulation):
+sudo ip neigh replace <gateway-ip> dev <iface> lladdr <fake-mac> nud reachable
+
+VERIFIED FINDING (real, hands-on, not theoretical):
+A single, one-time fake ARP injection is NOT actually persistent. Tested directly:
+injected a fake MAC for the real gateway, then pinged it. The ping succeeded — and
+checking the ARP cache immediately after showed the kernel had SILENTLY SELF-HEALED,
+replacing the fake entry with the real gateway MAC the moment genuine traffic was
+attempted and the fake address failed to respond on the wire.
+
+REAL LESSON: genuine ARP poisoning attacks work by CONTINUOUSLY, REPEATEDLY sending
+fake ARP replies faster than the kernel's self-healing can correct them — not a
+single static injection. A one-time poison demonstrates the MECHANISM (the cache can
+be manipulated) but not the SUSTAINED nature of a real, effective attack. Don't
+mistake a successful single injection for proof an attack would actually work in
+practice — verify by checking the cache again after real traffic, the same way this
+was caught here.
+
+DEFENSE:
+Static ARP entries (marking critical gateways as PERMANENT rather than dynamic)
+resist this kind of poisoning, since the kernel won't auto-replace a permanent entry
+the way it does a dynamic one. On networks where this matters, switches with "Dynamic
+ARP Inspection" can also block unauthorized ARP replies at the network hardware level.
+
+--- ALSO LEARNED THIS SESSION: A REAL OPERATIONAL INCIDENT ---
+The break script for this section was originally run on the WRONG MACHINE (the host
+laptop, not this training VM) due to auto-detecting the wrong interface with no
+verification step. Caught by noticing an unfamiliar interface name (wlp0s20f3 instead
+of enp1s0) before serious damage occurred. Fixed by adding an explicit hostname/
+interface confirmation prompt to the script before it makes any changes. Real lesson:
+any script that modifies networking state should confirm its target environment
+before acting, never assume context silently. Also discovered during this incident:
+a failed `cd` command does not stop a script/command chain from continuing — it
+silently runs subsequent commands in the WRONG directory. Always verify with `pwd`
+or `hostname` after any `cd`, especially when juggling multiple machines (host + VM).
