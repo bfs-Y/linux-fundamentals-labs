@@ -1,24 +1,21 @@
-# Module 16 — Linux Networking
+# Module 16 — Linux Networking (Basics)
 
-## Objective
-Build real networking instinct across the full stack — interfaces, routing, DNS, firewalls, sockets, namespaces, TLS, and network security.
+## Scope
+This module now covers only basic networking failure modes that show up as
+collateral damage during general Linux sysadmin work — the kind of thing you
+fix in minutes once you know Linux, not deep protocol-level study.
+
+**Deep networking labs — ARP, TCP/UDP internals, NAT, container namespaces,
+load balancing, TLS, packet capture, network attacks — have moved to their
+own repo: [linux-networking-labs](https://github.com/bfs-Y/linux-networking-labs)**
+
+## What stays here
+- Interface down / won't come up
+- Route missing / default gateway gone
+- DNS resolution silently failing
+- A port blocked by firewall you didn't expect
 
 ## Structure
-- break/   — scripts that deliberately break networking in specific ways
-- fix/     — diagnosis and repair procedures for each break scenario
-- harden/  — scripts to lock down and secure network configuration
-- drills/  — daily hands-on command sequences to build muscle memory
-
-## Topics
-1. Interfaces — reading, configuring, troubleshooting
-2. TCP/IP — what actually happens on the wire
-3. Routing — how packets find their way
-4. DNS — resolution, debugging, attacks
-5. Ports and sockets — binding, states, diagnosis
-6. Firewalls — iptables, nftables, ufw
-7. Traffic analysis — tcpdump, ss, netstat, nmap
-8. Network namespaces — container isolation
-9. Load balancing and proxying
-10. TLS/SSL — handshake, certificates, debugging
-11. Network attacks — MITM, DNS poisoning, scanning
-12. Hardening — locking down a fresh server
+- break/ — scripts that deliberately break basic networking
+- fix/ — diagnosis and repair for each break scenario
+- drills/ — hands-on command sequences for muscle memory
