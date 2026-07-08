@@ -13,7 +13,6 @@ own repo: [linux-networking-labs](https://github.com/bfs-Y/linux-networking-labs
 - Interface down / won't come up
 - Route missing / default gateway gone
 - DNS resolution silently failing
-- A port blocked by firewall you didn't expect
 
 ## Structure
 - break/ — scripts that deliberately break basic networking
