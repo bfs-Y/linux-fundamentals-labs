@@ -62,3 +62,19 @@ When executing the remaining 10-folder migration: check EVERY file
 individually (break/fix/harden/drills), not just the break/ script, before
 deciding a whole folder moves. Some drills may be neutral command-reference
 content even inside a folder whose break/ scripts are clearly attacks.
+
+## Thin folders after security migration (not urgent, revisit later)
+13-permissions-security and 14-users-sudo now only contain the restored
+neutral drills (06-stat-namei.md, 04-useradd-usermod.md respectively) — no
+break/fix/harden scripts of their own, since all prior break/fix content in
+those folders was genuinely security-framed and correctly stayed migrated.
+Consider whether these two topics deserve real neutral break/fix content of
+their own (e.g., a genuine permission-misconfiguration-no-attacker scenario,
+a genuine useradd/usermod mistake-and-fix scenario) or whether a single
+reference drill is sufficient for this repo's scope.
+
+## No postmortem content anywhere in this repo
+Confirmed: linux-break-fix-harden has zero postmortem/ entries across any
+topic folder. Revisit — decide whether to backfill at least one real
+postmortem here, matching the standard already established in
+linux-networking-labs (ARP capture) and linux-security-labs.
