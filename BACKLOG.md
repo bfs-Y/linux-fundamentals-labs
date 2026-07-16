@@ -78,3 +78,24 @@ Confirmed: linux-break-fix-harden has zero postmortem/ entries across any
 topic folder. Revisit — decide whether to backfill at least one real
 postmortem here, matching the standard already established in
 linux-networking-labs (ARP capture) and linux-security-labs.
+
+## URGENT: testing was done on host, not training VM — process violation
+Tonight's 13-permissions-security / 14-users-sudo testing (drilluser,
+/etc/drilltest.conf) ran on the HOST by mistake, violating the established
+break/fix-runs-in-VM-only rule. Cleaned up afterward (drilluser deleted,
+/etc/drilltest.conf removed). No lasting harm done this time, but the
+process discipline slipped — re-establish PS1 awareness before next
+scripting session.
+
+Also: attempted scp of the whole repo to the VM failed partway (permission
+denied on .git/objects — VM's existing clone owned by different user/perms).
+Do NOT continue that approach. Next session: use `git clone` fresh on the
+VM instead of scp, keep host and VM repo copies independent, always push
+from host then pull on VM (or vice versa) rather than direct file copy.
+
+Also confirmed via this failed scp: linux-break-fix-harden has significantly
+MORE unmigrated security content than the 10 folders logged in the initial
+audit — saw zombie-factory, oom-trigger, reverse-shell-sim, log-tamper,
+cron-persistence, ld-preload-persist file names scroll past that weren't
+part of that audit. Full folder-by-folder audit needs to be broader than
+first scoped.
