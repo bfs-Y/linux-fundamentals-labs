@@ -51,3 +51,14 @@ misconfiguration?" before moving anything.
 5. After migration, re-verify linux-break-fix-harden's remaining folder
    list is genuinely fundamentals-only (repeat the same audit once more,
    don't assume this list is exhaustive)
+
+## Lesson from tonight's users-sudo/permissions-security migration
+Bulk-moving entire folders based on the break/ script's content was wrong —
+each folder had 1 genuinely neutral drill file mixed in with 6 legitimately
+security-framed ones (users-sudo: 04-useradd-usermod.md was neutral;
+permissions-security: 06-stat-namei.md was neutral). BOTH were caught and
+restored to fundamentals after the fact.
+When executing the remaining 10-folder migration: check EVERY file
+individually (break/fix/harden/drills), not just the break/ script, before
+deciding a whole folder moves. Some drills may be neutral command-reference
+content even inside a folder whose break/ scripts are clearly attacks.
