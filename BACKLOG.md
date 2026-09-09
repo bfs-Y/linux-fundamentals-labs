@@ -1,59 +1,49 @@
-# linux-break-fix-harden — Backlog
+## Numbering has drifted twice — cross-reference before trusting old entries (2026-09-XX)
 
-## Repo-wide security/fundamentals split — COMPLETE (2026-07-17)
-All 10 originally-flagged folders migrated to linux-security-labs, verified
-via actual file content (not just names), using the test: "is there an
-attacker in this scenario, or is this a neutral mechanism/misconfiguration?"
+Everything below this point uses an OLD numbering scheme
+(13-permission-directories, 14-users-sudo, 15-process-signals,
+16-networking, 02-bin-recovery, 04-sbin-admin) that no longer matches the
+repo on disk. The repo was renumbered at least once after this backlog was
+last touched (to 01-process-signals through 10-networking), then renumbered
+again into dependency-correct learning order (00-shell-and-filesystem
+through 14-shell-scripting-automation, current as of this entry). Current
+mapping for anything referenced below:
 
-Final migration results:
-- 01-usr-execution → phase7-secops/usr-execution (whole folder, confirmed
-  security throughout, no split needed)
-- 04-sbin-admin → SPLIT: break/fix/harden scripts + drills/05-system-audit.md
-  moved to phase3-access-control/sbin-admin (security); drills 01-04
-  (sbin-inventory, user-management, filesystem-ops, service-management)
-  stayed here — genuinely neutral admin-tool reference content
-- 05-lib-hijacking → phase7-secops/lib-hijacking (whole folder)
-- 06-tmp-attacks → phase7-secops/tmp-attacks (whole folder)
-- 07-var-attacks → phase6-logging-monitoring/var-attacks (whole folder —
-  log/monitoring integrity specifically, not general secops)
-- 08-boot-security → phase7-secops/boot-security (whole folder)
-- 09-root-hardening → phase7-secops/root-hardening (whole folder)
-- 10-dev-attacks → phase7-secops/dev-attacks (whole folder)
-- 11-etc-hardening → phase7-secops/etc-hardening (whole folder, confirmed:
-  backdoor account planting via /etc/passwd + /etc/shadow)
-- 12-home-security → phase7-secops/home-security (whole folder)
+- 13-permission-directories -> 03-permission-directories
+- 14-users-sudo -> 04-users-sudo
+- 15-process-signals -> 06-process-signals
+- 16-networking -> 10-networking
+- 02-bin-recovery -> 07-bin-recovery
+- 04-sbin-admin -> 05-sbin-admin
 
-All drills in the 6 batch-moved folders individually reviewed after the
-move — confirmed all genuinely security-framed, no neutral content found
-(unlike 04-sbin-admin, which did require a split).
+Do not trust folder numbers in entries below without translating through
+this mapping first. Future renumbers should add a new mapping block here
+rather than editing history below.
 
-## Remaining fundamentals content in this repo (final, verified shape)
-- 02-bin-recovery — /usr mount failure simulation, no attacker
-- 04-sbin-admin (drills only) — sbin tool inventory, user management,
-  filesystem ops, service management reference
-- 13-permission-directories — basics-only permission/ownership lab,
-  tested live on VM
-- 14-users-sudo — basics-only useradd/usermod -aG lab, tested live on VM
-- 15-process-signals — zombie process creation for inspection
-- 16-networking — interface/route/DNS basics
+## Correction: 05-sbin-admin (formerly 04-sbin-admin) is NOT inconsistent
 
-## Still open — thin folders (not urgent, revisit later)
-13-permission-directories and 14-users-sudo have real break/fix content now
-(added 2026-07-16/17), but still missing: README.md, test-log.md,
-postmortem/ for both. harden/ likely not needed for basics-only scope —
-confirm before deciding.
+README.md's structure table (as of commit 31e040a) flagged
+`05-sbin-admin` as "**Inconsistent** — drills/README/test-log exist with no
+break/fix behind them. Needs resolving." This is wrong and needs fixing in
+README — the drills-only shape is not an accident, it's the direct result
+of the deliberate split documented below (2026-07-17): break/fix/harden
+content for sbin-admin was intentionally moved to
+`linux-security-labs/phase3-access-control/sbin-admin`, and the drills that
+remained (sbin-inventory, user-management, filesystem-ops,
+service-management) were kept here on purpose as neutral admin-tool
+reference material. Fix README's status table to reflect this instead of
+flagging it as unresolved.
 
-## Still open — no postmortem content anywhere in this repo
-Confirmed: linux-break-fix-harden has zero postmortem/ entries across any
-topic folder. Revisit — decide whether to backfill at least one real
-postmortem here, matching the standard already established in
-linux-networking-labs (ARP capture, DNS backup-corruption) and
-linux-security-labs.
+## Open: no hostname-confirmation warning in LAB-SETUP.md
 
-## Resolved — process note for future reference
-Earlier in this migration, testing was accidentally done on the HOST
-instead of the training VM (13-permission-directories/14-users-sudo initial
-testing). Caught, cleaned up, no lasting harm. Lesson: always confirm
-`hostname` before running break/fix scripts. A parallel attempt to scp the
-whole repo to the VM also failed (git object permission errors) — resolved
-by using `git clone`/`git pull` instead of direct file copy going forward.
+LAB-SETUP.md (added this session) doesn't warn about confirming `hostname`
+before running break/fix scripts. This bit us once already — see "Resolved
+— process note for future reference" below, where 13/14
+(permission-directories/users-sudo, old numbering) were accidentally tested
+on the HOST instead of the training VM. LAB-SETUP.md should get an explicit
+"run `hostname` and confirm you're on the lab VM before any break step"
+line so this doesn't repeat.
+
+---
+
+</parameter>
