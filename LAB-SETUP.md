@@ -46,3 +46,11 @@ recover from using that module's own FIX step, restore from your clean
 snapshot rather than attempting a manual repair outside the lab cycle —
 the point is proving you can fix what you broke, not proving you can save
 a VM you no longer understand the state of.
+
+
+## Before every break step
+
+Run `hostname` and confirm you're on the lab VM, not your host machine.
+This has bitten this project once already — a break/fix session was
+accidentally run against the host instead of the training VM. Cheap to
+check, expensive to recover from if skipped.
