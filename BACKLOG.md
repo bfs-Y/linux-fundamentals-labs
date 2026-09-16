@@ -1,49 +1,54 @@
-## Numbering has drifted twice — cross-reference before trusting old entries (2026-09-XX)
+## Numbering has drifted a third time — logs-auditing moved up (2026-09-13)
 
-Everything below this point uses an OLD numbering scheme
-(13-permission-directories, 14-users-sudo, 15-process-signals,
-16-networking, 02-bin-recovery, 04-sbin-admin) that no longer matches the
-repo on disk. The repo was renumbered at least once after this backlog was
-last touched (to 01-process-signals through 10-networking), then renumbered
-again into dependency-correct learning order (00-shell-and-filesystem
-through 14-shell-scripting-automation, current as of this entry). Current
-mapping for anything referenced below:
+Everything below this point (including the "drifted twice" mapping block)
+used a numbering scheme where logs-auditing was `13-logs-auditing`, near
+the end. That's been corrected — log literacy (`journalctl`, `dmesg`,
+persistent vs volatile journal storage) was needed by several earlier
+modules (01-boot-process, 07-process-signals, 09-services-systemd in the
+new numbering) long before the student would formally reach it at position
+13. Same category of mistake as package-management originally being too
+late in the very first roadmap draft.
 
-- 13-permission-directories -> 03-permission-directories
-- 14-users-sudo -> 04-users-sudo
-- 15-process-signals -> 06-process-signals
-- 16-networking -> 10-networking
-- 02-bin-recovery -> 07-bin-recovery
-- 04-sbin-admin -> 05-sbin-admin
+Mapping from the "drifted twice" numbering to current:
 
-Do not trust folder numbers in entries below without translating through
-this mapping first. Future renumbers should add a new mapping block here
-rather than editing history below.
+- 02-package-management -> 03-package-management
+- 03-permission-directories -> 04-permission-directories
+- 04-users-sudo -> 05-users-sudo
+- 05-sbin-admin -> 06-sbin-admin
+- 06-process-signals -> 07-process-signals
+- 07-bin-recovery -> 08-bin-recovery
+- 08-services-systemd -> 09-services-systemd
+- 09-storage-mounts-fstab -> 10-storage-mounts-fstab
+- 10-networking -> 11-networking
+- 11-ssh -> 12-ssh
+- 12-firewall -> 13-firewall
+- 13-logs-auditing -> 02-logs-auditing (moved up, not just shifted)
 
-## Correction: 05-sbin-admin (formerly 04-sbin-admin) is NOT inconsistent
+00-shell-and-filesystem, 01-boot-process, and 14-shell-scripting-automation
+are unchanged across all three numbering schemes.
 
-README.md's structure table (as of commit 31e040a) flagged
-`05-sbin-admin` as "**Inconsistent** — drills/README/test-log exist with no
-break/fix behind them. Needs resolving." This is wrong and needs fixing in
-README — the drills-only shape is not an accident, it's the direct result
-of the deliberate split documented below (2026-07-17): break/fix/harden
-content for sbin-admin was intentionally moved to
-`linux-security-labs/phase3-access-control/sbin-admin`, and the drills that
-remained (sbin-inventory, user-management, filesystem-ops,
-service-management) were kept here on purpose as neutral admin-tool
-reference material. Fix README's status table to reflect this instead of
-flagging it as unresolved.
+Do not trust folder numbers in entries below (including the "drifted
+twice" block) without translating through this mapping first. As before:
+future renumbers should add a new mapping block here rather than editing
+history below.
 
-## Open: no hostname-confirmation warning in LAB-SETUP.md
+## Process note: git mv and empty .gitkeep files don't mix safely
 
-LAB-SETUP.md (added this session) doesn't warn about confirming `hostname`
-before running break/fix scripts. This bit us once already — see "Resolved
-— process note for future reference" below, where 13/14
-(permission-directories/users-sudo, old numbering) were accidentally tested
-on the HOST instead of the training VM. LAB-SETUP.md should get an explicit
-"run `hostname` and confirm you're on the lab VM before any break step"
-line so this doesn't repeat.
+While executing this reorder, several `git mv` operations targeting
+empty skeleton folders (identifiable only by their `.gitkeep` markers)
+got tangled in git's rename-detection heuristics — since empty files are
+byte-identical, git guessed at "closest match" renames across completely
+unrelated folders rather than tracking the actual intended moves. The
+symptom: `git status` showed `.gitkeep` files renaming between modules
+that were never actually related. Caught before committing by cross-
+checking `find <module> -type f` file counts against the pre-reorder tree,
+module by module — the real content files (README.md, test-log.md, actual
+break/fix scripts) all renamed correctly throughout; only the empty
+`.gitkeep` bookkeeping got scrambled, and since `.gitkeep` files carry no
+real content, this was cosmetic, not a data-loss risk. Lesson: after any
+bulk `git mv` touching skeleton/empty folders, verify with `find`-based
+file counts before trusting `git status`'s rename labels, and don't
+hesitate to `git reset` and re-stage cleanly if the rename list looks
+suspicious.
 
 ---
-
-</parameter>
