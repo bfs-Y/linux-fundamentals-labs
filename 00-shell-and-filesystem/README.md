@@ -27,6 +27,3 @@ abstraction — not command trivia, the mechanism.
   change, per incident
   - `01-xargs-whitespace.md`
   - `02-path-corruption.md`
-
-Anki-style drill cards for this module are kept off-repo (personal
-notepad/Anki), not committed here.
