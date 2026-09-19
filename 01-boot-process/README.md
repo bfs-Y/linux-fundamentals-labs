@@ -30,5 +30,5 @@ harder module later, if built at all).
   produced better material than the planned exercise)
 - `lab-notes` entries appended to the repo-wide running file
 
-Anki-style drill cards for this module are kept in `drills/`, committed
+Drills for this module are kept in `drills/`, committed
 to the repo.
