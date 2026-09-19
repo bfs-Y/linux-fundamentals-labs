@@ -29,5 +29,6 @@ harder module later, if built at all).
   per incident (including the unplanned SSH/display detour, which
   produced better material than the planned exercise)
 - `lab-notes` entries appended to the repo-wide running file
+
 Anki-style drill cards for this module are kept in `drills/`, committed
 to the repo.
