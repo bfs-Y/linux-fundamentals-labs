@@ -1,21 +1,20 @@
-# Postmortem — GRUB verbosity change (quiet/splash)
+# Postmortem - removing quiet splash from the boot settings
 
-**Root cause:** Deliberately removed `quiet splash` from
-`GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` to observe full
-verbose boot output instead of the graphical splash screen.
+**What caused it:** this was on purpose. I took `quiet splash` out of
+`GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` to see a more verbose
+boot, then rebooted.
 
-**Detection method:** Verified at every stage before reboot -
-`grep`'d the edited source file, then `grep`'d the regenerated
-`/boot/grub/grub.cfg` directly (not just the source), confirming the
-change propagated through the full `/etc/default/grub` -> `update-grub`
--> `grub.cfg` pipeline. Post-reboot, confirmed live via
-`dmesg -T`'s kernel command-line output.
+**How I found it:** nothing went wrong, so this is about checking. I saved
+a backup with `sed -i.bak`, ran `update-grub`, and grepped
+`/boot/grub/grub.cfg` to confirm `quiet splash` was gone before I
+rebooted. After the reboot, `dmesg -T` showed a kernel command line that
+ended at `ro`.
 
-**Time to resolution:** Immediate - planned, reversible change with a
-`.bak` backup taken before editing.
+**How it was fixed:** I copied the `.bak` file back, ran `update-grub`,
+confirmed `quiet splash` was in `grub.cfg`, and rebooted. The next boot
+showed `quiet splash` again.
 
-**One thing to do differently:** `GRUB_TIMEOUT_STYLE=hidden` and
-`GRUB_TIMEOUT=0` on this box mean the boot menu never displays without
-holding Shift/Esc during boot - worth changing before relying on
-"select the older kernel at GRUB" as a stated recovery path in any
-future blast-radius assessment.
+**What I'd do differently:** my plan for a bad boot was to pick the older
+kernel in the GRUB menu, but this VM has `GRUB_TIMEOUT=0` and a hidden
+menu, so I'd have to hold Shift or Esc to even see it. I should have
+known that before saying the older kernel was my way out.

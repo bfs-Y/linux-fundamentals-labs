@@ -1,29 +1,37 @@
-# 00 — Shell, Text, and Filesystem
+# 00 - Shell, Text, and Filesystem
 
-Foundation module. Covers how Bash resolves a command before running it,
-and how Linux actually represents "files and folders" underneath the
-abstraction — not command trivia, the mechanism.
+This was my first module. I ran most of it on Ubuntu 24.04 and Rocky 10,
+with a couple of checks on Fedora. The main thing I learned is that the
+shell does a lot of lookup work before a command runs, and that a file
+and its name are not the same thing.
 
-## Must-cover topics
+## What I covered
 
-- Command resolution order: alias > function > builtin > $PATH external
-  binary, and the tools that expose it (`type -a`, `which`, `command -v`)
-- PATH mechanics: how it's searched, what an empty component actually
-  means (cwd, not "nowhere"), and how recovery works when it's broken
-- Inodes: what one actually is, hard links vs symlinks, and what "deleting
-  a file" really does at the filesystem level
-- `find` + `xargs` interaction, and the whitespace-splitting failure mode
+- How bash decides what to run. The order is alias, then function, then
+  builtin, then a program found through `$PATH`. `type -a` shows every
+  match. On Fedora, `which` turned out to be an alias that feeds my
+  aliases and functions into `/usr/bin/which`, because a separate program
+  can't read the shell's memory. Rocky ships `/usr/bin/alias` as a real
+  file and Ubuntu doesn't.
+- How `$PATH` works. When I set it to an empty string, `ls` failed with
+  "No such file or directory", not "not found". An empty entry in
+  `$PATH` means "look in the current directory", so bash searched there
+  and found nothing. Builtins like `echo` kept working. `chmod` didn't,
+  because it's a program too.
+- Inodes. A hard link is a second name for the same inode, so deleting
+  one name left the data alone. A symlink has its own inode and only
+  stores a path, so it broke when I deleted its target.
+- The `find | xargs rm` problem. A file with a space in its name got split
+  into two bad arguments, so the file survived. `find -print0 | xargs -0`
+  fixed it.
 
-## Structure
+## What's in this folder
 
-- `test-log.md` — dated transcript of commands run and real output
-- `break/` — reproducible, self-inflicted faults
-  - `01-xargs-whitespace-bug.sh`
-  - `02-path-corruption.sh` (must be `source`d, not run with `bash`)
-- `fix/` — diagnosis-and-repair scripts, one per break script
-  - `01-fix-xargs-whitespace.sh`
-  - `02-restore-path.sh` (must be `source`d)
-- `postmortem/` — root cause, detection method, time-to-resolution, one
-  change, per incident
-  - `01-xargs-whitespace.md`
-  - `02-path-corruption.md`
+- `test-log.md`: the commands I ran and what they printed.
+- `break/`: two scripts, `01-xargs-whitespace-bug.sh` and
+  `02-path-corruption.sh`. The second one has to be run with `source`, not
+  `bash`, or the broken `$PATH` only lasts inside the script.
+- `fix/`: a repair for each break, `01-fix-xargs-whitespace.sh` and
+  `02-restore-path.sh` (also run with `source`).
+- `postmortem/`: a short write-up for each break.
+- `drills/`: questions with answers.

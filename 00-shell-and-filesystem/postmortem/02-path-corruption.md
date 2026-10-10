@@ -1,24 +1,23 @@
-# Postmortem — $PATH corruption
+# Postmortem - empty $PATH
 
-**Root cause:** `$PATH` was set to an empty string. An empty component in
-`$PATH` is interpreted by bash as "search the current directory," not
-"search nowhere" — so `ls` failed with `No such file or directory` (ENOENT,
-a genuine failed lookup at `./ls`) rather than `not found` (no candidate
-located anywhere), because bash did in fact search, just only one
-directory.
+**What caused it:** I set `PATH=""`. External programs like `ls` and
+`chmod` stopped working, but builtins like `echo` still did. `ls` failed
+with "No such file or directory", not "not found". An empty entry in
+`$PATH` means "look in the current directory", so bash did look, once,
+and found nothing.
 
-**Detection method:** Two hypotheses were tested and eliminated with
-evidence before the correct one was found: (1) a stale command hash was
-ruled out via `hash` showing an empty table; (2) creating a dummy `./ls` in
-the cwd and observing the error change from `No such file or directory` to
-`Permission denied` confirmed bash was searching cwd, not refusing to
-search at all.
+**How I found it:** I had two wrong guesses first. Stale command cache:
+ruled out because `hash` was empty. `type -a ls` only showed the alias, so
+it didn't help. What worked was putting a file called `ls` in the current
+directory. The error changed to "Permission denied", which showed that
+bash was looking there and had found a file that wasn't executable.
+`echo "$PATH"` showed the empty value directly.
 
-**Time to resolution:** Required two rounds of hypothesis-and-test before
-landing on the correct mechanism; not solved on the first guess.
+**How it was fixed:** `export PATH` back to the normal value. That's a
+builtin, so it worked without `$PATH`. I couldn't use `chmod` to fix the
+dummy file, because `chmod` is a program too.
 
-**One thing to do differently:** When PATH is fully broken, `chmod` and
-other external tools are unreachable too — recovery requires either
-restoring PATH directly via `export` (a builtin, no PATH needed) or having
-a known-good PATH value already captured somewhere accessible without
-external tools.
+**What I'd do differently:** when commands vanish, run `echo "$PATH"`
+first. Absolute paths like `/usr/bin/cat` still work with an empty
+`$PATH`. Keep a copy of the normal value somewhere I can read without any
+external program.

@@ -1,19 +1,19 @@
-# Postmortem — xargs whitespace-splitting bug
+# Postmortem - find | xargs rm missed a file with a space in its name
 
-**Root cause:** `xargs` splits its input on whitespace by default. A
-filename containing a space (`/tmp/my file.log`) was torn into two separate
-arguments at the space boundary, so `rm` received two bogus paths instead
-of the one real one.
+**What caused it:** `xargs` splits its input on spaces. The file
+`/tmp/my file.log` came through as two arguments, `/tmp/my` and
+`file.log`. Neither exists, so `rm` printed two errors and the real file
+was left alone.
 
-**Detection method:** Manual verification with `ls /tmp/my*.log` after the
-"cleanup" ran — the file was still present despite `rm` executing with no
-apparent early failure.
+**How I found it:** I checked with `ls /tmp/my*.log` after the cleanup
+ran, and the file was still there. The script had kept going and looked
+like it had worked.
 
-**Time to resolution:** Immediate once the whitespace-splitting mechanism
-was understood; root cause was reasoned out from first principles, not
-looked up.
+**How it was fixed:** `find /tmp -name '*.log' -print0 | xargs -0 rm`.
+This separates names with a null byte, which can't appear in a filename.
+The file was gone afterwards.
 
-**One thing to do differently:** Always use `find -print0 | xargs -0` when
-piping filenames into `xargs`, since a null byte can never legally appear
-in a filename and is the only delimiter guaranteed not to collide with the
-data.
+**What I'd do differently:** use `-print0` and `-0` whenever filenames
+go through a pipe. I also ran `find` over all of `/tmp`, which printed
+permission errors from folders I don't own. Next time I'd limit it to a
+test folder with `-maxdepth` so the output stays about the bug.
