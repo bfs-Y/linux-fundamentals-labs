@@ -52,3 +52,27 @@
   22 and only starts ssh.service on first connection — ssh.service showing
   inactive (dead) is expected, not a fault, as long as ssh.socket is
   active (listening).
+
+## 2026-10-08 - Module 02
+
+- An empty search can mean five things, not four. The new one was
+  permission. On Rocky my user could only read its own journal, so a
+  search for a time the machine was running showed nothing. I first
+  decided the entries were lost, and `journalctl --header` proved that
+  wrong. Next time: run it with `sudo` and check `id` before blaming the
+  logs.
+- To prove the journal persists, check the folder and also reboot with a
+  `logger` marker and find it with `journalctl -b -1`. The folder shows
+  the setup and the marker shows the result.
+- `df` at 100% is what a normal user sees. `stat -f` is the live number
+  and `tune2fs -l` can be stale on a mounted filesystem. Don't use
+  `tune2fs` free-block numbers during an incident.
+- `rotate N` deletes the oldest copy silently on rotation N+1. A missing
+  log line can mean it was never written or that rotation removed it.
+- Ubuntu and Rocky differ again: Ubuntu keeps the journal by default and
+  Rocky didn't, Ubuntu's journal folder has an ACL (`+`) and Rocky's has
+  an SELinux label (`.`), and `ubuntulab` is in `adm` while `bfs` is only
+  in `wheel`. Check each box instead of assuming.
+- Still open: why the root write failed on Rocky with free blocks left,
+  what the `.journal~` files on Ubuntu mean, and what a crash does to the
+  journal.
