@@ -1,74 +1,38 @@
-# 00 — Shell and Filesystem: Drill (with answers)
+# 00 - Shell and Filesystem: Drill
 
-Scenario-based, built from what actually happened during this module's
-lab, not invented from a textbook.
+**1. I log into a box and `ls` fails. What's the first command I run to
+see `$PATH`, and why that one?**
 
----
+`echo "$PATH"`. It's a builtin, so it still works when `$PATH` is
+broken. I first reached for `type -a ls`, which was the wrong tool. It
+only showed the alias and never showed whether `$PATH` was the problem.
 
-**1. You SSH into a box, `ls` fails, and someone says "nothing changed."
-Before touching anything else — what's the one command that shows you
-PATH's real value, using nothing but a shell builtin?**
+**2. `ls` says "No such file or directory" instead of "not found". What's
+the difference?**
 
-`echo "$PATH"`. It's a builtin, so it works no matter how broken the
-environment is — no external binary required, no risk of it being the
-thing that's actually broken. This came out of a real mistake: the first
-instinct was `type -a ls`, which turned out to be the wrong tool here —
-it only reports what the alias points at, and stops there. It never
-confirms whether PATH itself, the thing actually needed to reach the real
-binary, is intact.
+"Not found" means bash looked through every directory in `$PATH` and
+found nothing. "No such file or directory" means bash tried a specific
+path and it wasn't there. With `PATH=""`, the empty entry means "look in
+the current directory", so bash looked there once and found no `ls`.
 
----
+**3. I ran `rm` on a file and it finished with no error. Is the data
+gone?**
 
-**2. `ls` fails with `No such file or directory` instead of `not found`.
-What does that specific wording actually tell you?**
+Not if another hard link points at the same inode. `rm` removes one name
+and lowers the link count. The data is freed when the count reaches zero
+and nothing has the file open. `ls -li` shows the inode number and the
+link count.
 
-`not found` means bash searched every directory in PATH and found nothing
-anywhere. `No such file or directory` means bash *did* find a specific
-path to try, attempted to open it, and that exact path doesn't exist. The
-two imply different things about what bash actually did. This distinction
-came out of a live debugging chain: PATH was set to empty, and `ls` threw
-the second kind of error — meaning bash wasn't refusing to search, it was
-searching *somewhere specific* and failing there. That somewhere turned
-out to be the current directory, because an empty PATH component is
-interpreted as "search here," not "search nothing."
+**4. A symlink's target gets deleted. What happens to the symlink?**
 
----
+The symlink stays. It has its own inode and only stores the target's path
+as text. Reading it fails with "No such file or directory". The size
+`ls -li` shows for a symlink is just the length of that path, 15 for
+`/tmp/target.txt`.
 
-**3. A teammate says a deleted file's data is gone for good because `rm`
-ran with no error. When are they wrong, and what would you check?**
+**5. A cleanup script missed a file with a space in its name. Why?**
 
-They're wrong if another hard link to the same inode still exists. `rm`
-only removes one directory entry and decrements a link count — it doesn't
-touch the underlying data unless that count reaches zero. The number to
-check is the link count column in `ls -li` or `stat`, ideally *before* the
-delete, since that's the only reliable way to know in advance whether a
-name is the last pointer to that data or one of several.
-
----
-
-**4. A symlink's target file gets deleted. `ls -li` on the symlink still
-shows it. Why does the symlink survive, and what does `cat` do?**
-
-A symlink isn't the same kind of object as its target — it has its own
-separate inode, and that inode's entire content is just a text string: the
-path it points to. Deleting the target never touches the symlink's own
-inode, so the symlink itself keeps existing. But `cat` on it tries to
-resolve that stored path and open whatever's there — and if the target's
-gone, that resolution fails with `No such file or directory`, even though
-the symlink object itself is completely intact. Proven directly: the
-target was deleted, `ls -li` still listed the symlink with its original
-inode, and `cat` failed cleanly right after.
-
----
-
-**5. A cleanup script quietly failed to delete a file with a space in its
-name. What broke, and what's the fix?**
-
-`xargs` splits its input on whitespace by default. A filename like
-`my file.log`, when piped in as plain text from `find`, gets torn into two
-separate arguments at the space — neither of which is a real path — so
-both delete attempts fail and the actual file is left untouched. It failed
-*silently* in the sense that the script kept running and printed no
-obvious crash, just two `rm: cannot remove` lines that looked like noise.
-Fix: `find ... -print0 | xargs -0 rm` — a null byte delimiter instead of
-whitespace, since a null byte can never legally appear inside a filename.
+`xargs` splits on spaces, so `/tmp/my file.log` became `/tmp/my` and
+`file.log`. Neither exists, so `rm` printed two errors and left the real
+file alone. `find -print0 | xargs -0 rm` fixes it by splitting on a null
+byte, which can't appear in a filename.

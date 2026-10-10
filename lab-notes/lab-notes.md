@@ -1,57 +1,41 @@
-# Lab Notes — cross-module patterns and open threads
+# Lab Notes - patterns and open threads
 
-## 2026-09-17 — Module 00
+## 2026-09-17 - Module 00
 
-- Command resolution order proven empirically: alias > function > builtin >
-  $PATH external binary. `type -a` is the single tool that exposes every
-  layer at once; `which`/`command -v` only show the final external-binary
-  answer and can miss an intervening alias or function.
-- An empty $PATH component means "search cwd," not "search nowhere" — a
-  real, non-obvious gotcha worth carrying into later modules (09 services,
-  14 cron) where environment differs from an interactive shell's.
-- find's default scope in /tmp picks up systemd private-tmp dirs you don't
-  own, producing unrelated Permission denied noise — scope find more
-  tightly (-maxdepth, or a dedicated test dir) in future break scripts
-  instead of running loose against shared directories like /tmp.
-- Two wrong hypotheses were tested and killed with evidence (stale hash;
-  then confirmed empty-PATH-searches-cwd) before landing on the real
-  mechanism — worth remembering as a model for future debugging: cheap
-  hypotheses first, killed fast by a single command, not defended.
+- bash looks for a command in this order: alias, function, builtin, then
+  a program found through `$PATH`. `type -a` shows every match. `which`
+  and `command -v` only give the final answer and can miss an alias.
+- An empty `$PATH` entry means "look in the current directory", not "look
+  nowhere". I want to remember this for the later modules (services,
+  cron), where the environment isn't the one in my terminal.
+- My `find` over `/tmp` also searched systemd folders I don't own and
+  printed permission errors. Next time I'll use a test folder or
+  `-maxdepth`.
+- I tried a stale command cache first when `$PATH` broke. `hash` was
+  empty, so that was wrong. A dummy `ls` in the current directory showed
+  what was really happening. A cheap test that can prove a guess wrong in
+  one command beats defending the guess.
 
-## 2026-09-18 — Module 01
+## 2026-09-18 - Module 01
 
-- dmesg reads the kernel's in-memory ring buffer directly (exists from the
-  instant the kernel starts); journalctl -b depends on journald, a systemd
-  component that can't run before systemd does. Proven with a 1-second gap
-  between dmesg -T's and journalctl -b's timestamps for the same event —
-  journald imports the kernel buffer retroactively, doesn't capture it live.
-- journalctl's pager (less) truncates long lines with a trailing '>' — not
-  the data itself being cut. --no-pager (or piping to cat) shows full text.
-  Cost real time misreading truncated error messages before catching this.
-- -p err severity does not mean boot failure. A fully healthy, successfully
-  booted VM can show err-level noise from non-critical services (rtkit,
-  gdm, pam) all night — read source/context before concluding anything's
-  actually broken.
-- UUID (filesystem identity, stamped at format time) vs PARTUUID (partition
-  table slot identity) vs device path (/dev/sda1, /dev/vda2, /dev/nvme0n1p*
-  — kernel-assigned, position-dependent, can shift between boots) confirmed
-  as three genuinely separate identifiers on the same disk, across two
-  different machines.
-- Real incident: "Connection refused" vs a timeout are meaningfully
-  different signals — refused means something reachable actively rejected
-  the connection (nothing listening on that port); a timeout would mean no
-  response at all. Worth internalizing as an immediate diagnostic fork,
-  not just noise to work around.
-- Don't default to blaming the most recent change (a reboot, a config edit)
-  when a new symptom shows up at the same time — nearly misattributed a
-  pre-existing missing-openssh-server gap to a GRUB revert that had nothing
-  to do with it. virsh (list --all, domifaddr, dominfo, console) let the
-  actual state get confirmed from the host side before ever touching the
-  guest, which is the reusable pattern for this class of incident.
-- Ubuntu uses socket activation for sshd by default: ssh.socket listens on
-  22 and only starts ssh.service on first connection — ssh.service showing
-  inactive (dead) is expected, not a fault, as long as ssh.socket is
-  active (listening).
+- `dmesg` reads the kernel's own buffer. The journal can only hold what
+  came after systemd started, so it imports the kernel messages later. On
+  my VM that was one second.
+- journalctl's pager cuts long lines with a `>`. The data isn't cut, and
+  `--no-pager` shows all of it.
+- `-p err` doesn't mean the boot failed. My healthy VM had errors from
+  desktop services all night.
+- A UUID is the ID of a filesystem and a PARTUUID is the ID of a
+  partition. Names like `/dev/sda1` can change between boots. I saw
+  `sd`, `vd` and `nvme0n1p` names on different machines.
+- "Connection refused" and a timeout are different problems. Refused
+  means something answered and nothing was listening.
+- A new problem right after a change isn't proof the change caused it. I
+  nearly blamed a GRUB revert for an SSH server that was never installed.
+  `virsh` let me check the VM from the host before I touched the guest.
+- Ubuntu starts ssh through a socket. `ssh.socket` listens on port 22 and
+  starts `ssh.service` when someone connects, so `inactive` on the
+  service is normal.
 
 ## 2026-10-08 - Module 02
 

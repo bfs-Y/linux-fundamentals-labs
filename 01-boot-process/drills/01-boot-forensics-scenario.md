@@ -1,75 +1,43 @@
-# 01 — Boot Process: Drill (with answers)
+# 01 - Boot Process: Drill
 
----
+**1. `journalctl -b -p err` shows errors on a VM I've been logged into for
+hours. Did the boot fail?**
 
-**1. `journalctl -b -p err` shows several error-priority lines on a VM
-that's clearly running fine — you've been SSH'd into it for hours. Does
-the presence of these lines mean the boot failed?**
+No. `-p err` only filters by severity. On my VM, every error came from
+desktop services (rtkit, gdm3, pam_unix), not from anything the boot
+needed. I look at which service the errors come from before I decide
+anything is broken.
 
-No. Severity level (`err`) is not the same claim as "boot failed."
-`-p err` only filters by priority — it says nothing about whether the
-failing component was on the critical boot path or just a non-essential
-service (audio daemon, login manager cosmetics) failing quietly and
-harmlessly. This came directly out of a real check tonight: every `err`
-line on a fully healthy VM traced back to rtkit-daemon, gdm3, and
-pam_unix — desktop noise, not boot-critical failures.
+**2. `dmesg` and `journalctl -b` both show the boot. Which one goes back
+further, and why?**
 
----
+`dmesg`. It reads the kernel's own buffer, which starts when the kernel
+starts. The journal is written by journald, part of systemd, which starts
+later. It imports the kernel messages once it's running. On my VM the same
+first kernel line was one second later in `journalctl -b` than in
+`dmesg -T`.
 
-**2. `dmesg -T` and `journalctl -b` both claim to show "the boot log," but
-one of them can show messages from earlier in the boot sequence than the
-other. Which one, and why?**
+**3. SSH says "Connection refused" on one host and just hangs on another.
+Are those the same problem?**
 
-`dmesg` can go earlier. It reads the kernel's own in-memory ring buffer,
-which starts filling the instant the kernel itself begins running —
-before initramfs, before systemd, before any conventional logging
-service exists. `journalctl -b` depends on journald, which is a systemd
-component — it cannot have recorded anything from before systemd started,
-by definition. Confirmed directly: `dmesg -T`'s earliest timestamp for a
-given boot was one full second earlier than `journalctl -b`'s import of
-the same kernel message — proof journald captured it retroactively, not
-live.
+No. "Refused" means my packet reached the host and something rejected it,
+usually because nothing is listening on that port. A hang means nothing
+answered, which points to a firewall, a host that's down, or a routing
+problem. On my VM, "refused" led me to check whether anything was
+listening on port 22.
 
----
+**4. After a reboot, the VM's window in virt-manager is blank. Is the VM
+dead?**
 
-**3. `ssh user@host` returns `Connection refused`. A different attempt
-against a different host returns a hang with no response at all
-(timeout). Are these the same category of problem?**
+Not necessarily. From the host I checked `virsh list --all` (running),
+`virsh domifaddr` (it had an IP), and `virsh dominfo` twice (CPU time went
+from 1530.6s to 1530.8s, so it wasn't frozen). I never found out why the
+window was blank. It showed the desktop after a shutdown and start.
 
-No — genuinely different signals. `Connection refused` means a packet
-reached that host on that port, and something actively rejected it —
-meaning the host is reachable, but nothing is listening on that specific
-port. A timeout means no response came back at all — could be a firewall
-silently dropping the packet, the host being down, or a routing problem.
-Refused points you toward "check what's supposed to be listening";
-timeout points you toward "check reachability and firewalls" first.
+**5. Something new breaks right after I made a change. Did the change cause
+it?**
 
----
-
-**4. A VM shows no output in the hypervisor's graphical console window
-after a reboot. Does that mean the VM failed to boot?**
-
-Not necessarily. The graphical console rendering and the guest OS
-actually running are two separate systems — one can fail while the other
-works fine. The correct next step isn't to assume failure, it's to check
-independently from the host side: is the VM's process even still running
-(`virsh list --all`), does it have a live network address
-(`virsh domifaddr`), and is it actively consuming CPU over time
-(`virsh dominfo`, checked twice, comparing CPU time). All three
-confirmed "alive" in a real incident where the console had simply failed
-to render — the actual root cause was elsewhere entirely.
-
----
-
-**5. Right after a planned change and reboot, a new unrelated symptom
-shows up (SSH refused). What's the reasoning trap here, and how do you
-avoid it?**
-
-The trap is assuming the most recent change caused the new symptom,
-just because they're close in time. In a real incident, "SSH refused"
-turned out to be caused by openssh-server never having been installed at
-all — completely unrelated to a GRUB edit and reboot that happened
-moments earlier. The fix: let the specific evidence (refused, not
-timeout; VM confirmed alive and fully booted via console) rule out
-categories of cause methodically, rather than defaulting to blaming
-whatever you touched most recently.
+Not necessarily. After I put `quiet splash` back and rebooted, SSH was
+refused, and I assumed the reboot had broken something. The real reason
+was that `openssh-server` had never been installed. Timing is a reason to
+look at the change, but I still have to check what's actually wrong.
