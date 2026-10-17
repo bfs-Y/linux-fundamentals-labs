@@ -60,3 +60,12 @@
 - Still open: why the root write failed on Rocky with free blocks left,
   what the `.journal~` files on Ubuntu mean, and what a crash does to the
   journal.
+
+## 2026-10-17 - Module 03
+
+- A hold or lock only hurts when something else needs a different version of the held package. With no gap between installed and candidate, the hold is invisible. That's why one can sit there for months and then break a deploy.
+- "held broken packages" also showed up when no hold was involved. I ran `apt-mark showhold` after the error and got nothing, and the cause was a version pin in both directions. I'll check `showhold` first from now on.
+- `dpkg -S /bin/ls` finds nothing on Ubuntu because /bin is a symlink and dpkg matches the recorded path literally. `rpm -qf` resolves it. Same question, different lookup.
+- The status file's mtime is just the last dpkg run. Who and when came from the sudo journal.
+- I pasted template blanks (`VERSION`, `____`) into the terminal twice. sudo logged them. Read before pasting.
+- I ran a Rocky block on the Ubuntu box. Check the prompt first.
