@@ -1,12 +1,9 @@
 ## 03-A baseline - Fri Oct 16 07:10:28 AM CDT 2026
 ### Ubuntu: ownership
-(paste dpkg -S /usr/bin/ls, dpkg -S /bin/ls, ls -ld /bin here)
 
 ### Ubuntu: hold and break
-(paste apt-mark hold, the held broken packages error here)
 
 ### Ubuntu: fix
-(paste unhold and the successful upgrade here)
 
 ### Ubuntu: ownership (real output, Fri Oct 16 07:13:55 AM CDT 2026)
 $ dpkg -S /usr/bin/ls
