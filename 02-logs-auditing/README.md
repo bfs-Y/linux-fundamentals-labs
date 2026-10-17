@@ -52,5 +52,11 @@ under `/tmp`, never against the real `/var/log`.
   overhead is a hypothesis; it was not proven.
 - The reboot-persistence test used a clean `sudo reboot`. It shows logs
   survive an orderly restart, not a crash or power loss.
-- Ubuntu's journal directory contains archived `.journal~` files. What
-  they indicate about earlier boots was not checked.
+- Ubuntu's journal directory has 22 archived `.journal~` files, all
+  dated 2026-07-09 to 2026-08-09. `journalctl --verify` passed all 92
+  files with no FAIL, so none were corrupt. `man systemd-journald` says
+  `~` means an unclean stop or corruption. In `last -x`, the July and
+  August boots mostly show a `reboot` with no preceding `shutdown`, and
+  no `~` files appear after 08-09, when shutdowns were clean. This fits
+  unclean stops but was not tested directly. A hard power-off from the
+  host (`virsh destroy`) would reproduce it.
