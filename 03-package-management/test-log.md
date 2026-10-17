@@ -81,7 +81,7 @@ $ cat /etc/dnf/plugins/versionlock.list
 ### 03-B Rocky incident: ghostscript blocked by locked ghostscript-tools-fonts (Sat Oct 17 02:40:01 AM EDT 2026)
 $ sudo dnf upgrade ghostscript
  package ghostscript-10.02.1-16.el10_2.3 requires ghostscript-tools-fonts = 10.02.1-16.el10_2.3, but none of the providers can be installed
- package ghostscript-tools-fonts-...el10_2.3 is filtered out by exclude filtering
+ package ghostscript-tools-fonts-10.02.1-16.el10_2.3.noarch from appstream is filtered out by exclude filtering
 $ cat /etc/dnf/plugins/versionlock.list (during incident)
  # Added lock on Sat Oct 17 02:36:09 2026
  ghostscript-tools-fonts-0:10.02.1-16.el10_2.1.*
