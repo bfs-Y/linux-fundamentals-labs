@@ -28,7 +28,7 @@ prove which package is. Run on Ubuntu 24.04 (apt/dpkg) and Rocky 10
 ## Structure
 
 - `test-log.md` — dated transcript of commands run and real output
-- `break/` — reproducible faults (not yet run end to end)
+- `break/` — reproducible faults (run once on a snapshot; both pairs produced and cleared the failure)
   - `01-held-nginx-common.sh`
   - `02-versionlock-hplip.sh`
 - `fix/` — one repair per break script
@@ -45,14 +45,13 @@ about.
 
 ## Open items
 
-- The break and fix scripts have not been run end to end.
 - Why `rpm -qf /bin/ls` resolves the symlink and `dpkg -S` doesn't was
   observed, not proven.
 - On Rocky, the lock file header time (02:36:09) and the sudo journal
   time (02:35:28) differ by about 40 seconds. Cause not checked.
-- `exclude=` in dnf.conf can produce the same "filtered out by exclude
-  filtering" message. Not tested.
+- `exclude=` is not set in `dnf.conf`. Whether it produces the same
+  "filtered out by exclude filtering" message was not tested.
 - The sudo journal only shows a hold if it went through sudo. A hold
   placed from a root shell was not tested.
-- `libgs` joined the ghostscript upgrade without appearing in the error.
-  Why was not checked.
+- `ghostscript` requires `libgs` at an exact `=` build, which is the
+  likely reason it joined the upgrade. Not tested by holding `libgs` back.
