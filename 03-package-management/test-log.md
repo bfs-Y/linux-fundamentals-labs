@@ -67,3 +67,25 @@ Fix: sudo apt-mark unhold nginx-common; sudo apt install nginx -> 2 upgraded, 0 
 - "held broken packages" appears even with NO hold (same error before and after unhold on the old-version install). Run apt-mark showhold first; empty means a version-pin conflict, not a hold.
 - apt install pkg=version overrides a hold ("held packages will be changed").
 - Three phrasings of one failure: "held broken packages", "pkgProblemResolver::Resolve generated breaks", dnf's "filtered out by exclude filtering".
+
+### Rocky: ownership and lock state (Fri Oct 16 08:15:36 AM EDT 2026)
+$ rpm -qf /usr/bin/ls
+coreutils-9.5-8.el10_2.1.x86_64
+$ rpm -qf /bin/ls
+coreutils-9.5-8.el10_2.1.x86_64
+$ ls -ld /bin
+lrwxrwxrwx. 1 root root 7 Apr  1  2025 /bin -> usr/bin
+$ cat /etc/dnf/plugins/versionlock.list
+(0 bytes, mtime 08:09:36, one minute after the lock was added at 08:08:32)
+
+### 03-B Rocky incident: ghostscript blocked by locked ghostscript-tools-fonts (Sat Oct 17 02:40:01 AM EDT 2026)
+$ sudo dnf upgrade ghostscript
+ package ghostscript-10.02.1-16.el10_2.3 requires ghostscript-tools-fonts = 10.02.1-16.el10_2.3, but none of the providers can be installed
+ package ghostscript-tools-fonts-...el10_2.3 is filtered out by exclude filtering
+$ cat /etc/dnf/plugins/versionlock.list (during incident)
+ # Added lock on Sat Oct 17 02:36:09 2026
+ ghostscript-tools-fonts-0:10.02.1-16.el10_2.1.*
+Who/when: journalctl _COMM=sudo -> bfs ran dnf versionlock add at 02:35:28
+Fix: dnf versionlock delete ghostscript-tools-fonts; dnf upgrade ghostscript -> Upgrade 4 Packages, no kernel
+$ wc -c /etc/dnf/plugins/versionlock.list
+0 /etc/dnf/plugins/versionlock.list
