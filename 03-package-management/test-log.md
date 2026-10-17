@@ -1,10 +1,4 @@
 ## 03-A baseline - Fri Oct 16 07:10:28 AM CDT 2026
-### Ubuntu: ownership
-
-### Ubuntu: hold and break
-
-### Ubuntu: fix
-
 ### Ubuntu: ownership (real output, Fri Oct 16 07:13:55 AM CDT 2026)
 $ dpkg -S /usr/bin/ls
 coreutils: /usr/bin/ls
