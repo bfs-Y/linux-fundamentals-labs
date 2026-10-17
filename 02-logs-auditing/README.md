@@ -47,6 +47,17 @@ under `/tmp`, never against the real `/var/log`.
 
 ## Open items
 
+- Crash test, Ubuntu (one run): wrote a `logger` marker, ran `sync`, then
+  hard powered off the VM with `virsh destroy`. After boot, the marker was
+  in `journalctl -b -1`, and the `.journal~` count rose from 22 to 24. The
+  two new files are dated 2026-10-17 03:22 and 03:24. `last -x` showed a
+  `reboot` with no preceding `shutdown`. This ties `~` files to unclean
+  stops. Not tested: a write with no `sync`, or Rocky, whose journal is
+  volatile by default.
+- On Rocky, a root-level append to a full loop filesystem failed even
+  though `stat -f` showed free blocks in the reserve. Journal or metadata
+  overhead is a hypothesis; it was not proven.
+
 - On Rocky, a root-level append to a full loop filesystem failed even
   though `stat -f` showed free blocks in the reserve. Journal or metadata
   overhead is a hypothesis; it was not proven.
