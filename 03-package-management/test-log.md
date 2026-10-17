@@ -24,8 +24,17 @@ E: Unable to correct problems, you have held broken packages.
 ### Ubuntu: fix
 $ sudo apt-mark unhold gnome-shell-common
 Canceled hold on gnome-shell-common.
+$ sudo apt install --only-upgrade gnome-shell
+The following packages will be upgraded:
+  gnome-shell gnome-shell-common
 2 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-Status: install ok installed   (both gnome-shell and gnome-shell-common at .16)
+$ dpkg -s gnome-shell gnome-shell-common | grep -E 'Package|Version|Status'
+Package: gnome-shell
+Status: install ok installed
+Version: 46.0-0ubuntu6~24.04.16
+Package: gnome-shell-common
+Status: install ok installed
+Version: 46.0-0ubuntu6~24.04.16
 
 ### Rocky: hold and break
 $ sudo dnf upgrade libsane-hpaio
@@ -80,3 +89,23 @@ Who/when: journalctl _COMM=sudo -> bfs ran dnf versionlock add at 02:35:28
 Fix: dnf versionlock delete ghostscript-tools-fonts; dnf upgrade ghostscript -> Upgrade 4 Packages, no kernel
 $ wc -c /etc/dnf/plugins/versionlock.list
 0 /etc/dnf/plugins/versionlock.list
+
+### Ubuntu: apt-cache policy gnome-shell-common (full, Sat Oct 17 02:16:10 AM CDT 2026)
+gnome-shell-common:
+  Installed: 46.0-0ubuntu6~24.04.16
+  Candidate: 46.0-0ubuntu6~24.04.16
+  Version table:
+ *** 46.0-0ubuntu6~24.04.16 500 (phased 10%)
+        500 http://ng.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages
+        100 /var/lib/dpkg/status
+     46.0-0ubuntu6~24.04.3 500
+        500 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages
+     46.0-0ubuntu5 500
+        500 http://ng.archive.ubuntu.com/ubuntu noble/main amd64 Packages
+
+### Finding: why libgs joined the ghostscript upgrade
+$ rpm -q --requires ghostscript | grep libgs
+libgs(x86-64) = 10.02.1-16.el10_2.3
+libgs.so.10()(64bit)
+$ grep -n exclude /etc/dnf/dnf.conf
+(no output: exclude= is not set; the versionlock plugin was the only filter)
