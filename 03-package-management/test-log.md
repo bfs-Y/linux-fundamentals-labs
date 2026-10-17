@@ -53,3 +53,17 @@ $ sudo dnf upgrade libsane-hpaio
 - /var/lib/dpkg/status mtime = last dpkg transaction, NOT the hold time.
 - Hold time and user come from: journalctl _COMM=sudo | grep apt-mark
 - Hold placed Oct 15 09:22:07, removed Oct 16 06:58:33, both by ubuntulab.
+
+### 03-B Ubuntu incident: nginx blocked by held nginx-common
+$ sudo apt install nginx
+ nginx : Depends: nginx-common (= 1.24.0-2ubuntu7.18) but 1.24.0-2ubuntu7 is to be installed
+ nginx-common : Depends: nginx (< 1.24.0-2ubuntu7.1~) but 1.24.0-2ubuntu7.18 is to be installed
+E: Error, pkgProblemResolver::Resolve generated breaks, this may be caused by held packages.
+Evidence: apt-mark showhold -> nginx-common; apt-cache policy: Installed ubuntu7, Candidate .18.
+Who/when: journalctl _COMM=sudo -> apt-mark hold nginx-common at 01:30:21 by ubuntulab.
+Fix: sudo apt-mark unhold nginx-common; sudo apt install nginx -> 2 upgraded, 0 removed. showhold empty.
+
+### Findings
+- "held broken packages" appears even with NO hold (same error before and after unhold on the old-version install). Run apt-mark showhold first; empty means a version-pin conflict, not a hold.
+- apt install pkg=version overrides a hold ("held packages will be changed").
+- Three phrasings of one failure: "held broken packages", "pkgProblemResolver::Resolve generated breaks", dnf's "filtered out by exclude filtering".
