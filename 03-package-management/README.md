@@ -28,7 +28,7 @@ prove which package is. Run on Ubuntu 24.04 (apt/dpkg) and Rocky 10
 ## Structure
 
 - `test-log.md` — dated transcript of commands run and real output
-- `break/` — reproducible faults (run once on a snapshot; both pairs produced and cleared the failure)
+- `break/` — reproducible faults (each break/fix pair run once on a snapshot: failure produced, then cleared)
   - `01-held-nginx-common.sh`
   - `02-versionlock-hplip.sh`
 - `fix/` — one repair per break script
