@@ -53,7 +53,7 @@ under `/tmp`, never against the real `/var/log`.
   two new files are dated 2026-10-17 03:22 and 03:24. `last -x` showed a
   `reboot` with no preceding `shutdown`. This ties `~` files to unclean
   stops. Not tested: a write with no `sync`, or Rocky, whose journal is
-  volatile by default.
+  volatile by default. Every boot from 2026-08-12 to 2026-10-16 has a matching `shutdown` line and produced no new `~` files; the crash test is the only exception.
 - On Rocky, a root-level append to a full loop filesystem failed even
   though `stat -f` showed free blocks in the reserve. Journal or metadata
   overhead is a hypothesis; it was not proven.
