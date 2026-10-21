@@ -58,3 +58,5 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - umask 0002: new file 664.
 - umask 077: file 600, dir 700. umask 022: file 644, dir 755.
 - Files start from 666, directories from 777; umask clears bits. Rocky default not yet checked.
+- Rocky umask 0022: new file 644 (-rw-r--r--.). Ubuntu 0002 gives 664.
+- This explains the chown lab difference: Rocky group had r-- only, Ubuntu group had rw-.
