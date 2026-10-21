@@ -37,3 +37,7 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Plain chgrp labreader: Operation not permitted. sudo chgrp worked: labreader labreader.
 - echo again >> own.txt: Permission denied (now "other", r--).
 - Kernel uses one class only: owner, else group, else other.
+
+### 04-C group rule (Ubuntu, 2026-10-21)
+- Owner chgrp adm g.txt: worked (owner is in adm). chgrp labreader g.txt: Operation not permitted (owner not in labreader).
+- Owner change: root only. Group change: root, or owner to a group they belong to.
