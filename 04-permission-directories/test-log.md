@@ -30,3 +30,10 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - d=444 and d=644: ls shows name f.txt but cannot stat it; cat d/f.txt Permission denied.
 - d=111: ls d denied; cat d/f.txt prints hello. x = reach by known name, r = list names.
 - Trap: chmod 444 . from inside d locked me out; chmod 755 . then failed. Fix was cd to parent and chmod 755 d.
+
+### 04-C chown/chgrp (Ubuntu, 2026-10-21)
+- Plain chown labreader own.txt: Operation not permitted. sudo chown worked: owner labreader, group ubuntulab.
+- echo more >> own.txt worked (group rw). Size 5 -> 10.
+- Plain chgrp labreader: Operation not permitted. sudo chgrp worked: labreader labreader.
+- echo again >> own.txt: Permission denied (now "other", r--).
+- Kernel uses one class only: owner, else group, else other.
