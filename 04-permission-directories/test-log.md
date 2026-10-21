@@ -77,3 +77,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - ls -lZ before fix: unconfined_u:object_r:user_tmp_t:s0. Not re-checked after fix.
 - Fix script set mask::r--, labreader read again, ls -l -rw-r-----+. Left labreader in place (no marker), removed /tmp/aclcase.
 - Not tested on Rocky: the userdel path for a script-created labreader.
+
+### 04-B directory r vs x (Rocky, 2026-10-21)
+- d=444: ls d shows f.txt but cannot access d/f.txt; cat d/f.txt Permission denied.
+- d=111: ls d denied; cat d/f.txt prints hello.
+- Same as Ubuntu. Always chmod the directory from its parent, never "chmod ." from inside.
