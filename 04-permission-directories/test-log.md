@@ -25,3 +25,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - dir 555 + file 664: rm "Permission denied".
 - SELinux: ls -ldZ ~/lab04 -> unconfined_u:object_r:user_home_t:s0.
 - mv d.txt /dev/shm kept user_home_t. New file and plain cp in /dev/shm got user_tmp_t. So mv kept the source context, cp used the destination default (one run; mechanism not traced).
+
+### 04-B directory r vs x (Ubuntu, 2026-10-21)
+- d=444 and d=644: ls shows name f.txt but cannot stat it; cat d/f.txt Permission denied.
+- d=111: ls d denied; cat d/f.txt prints hello. x = reach by known name, r = list names.
+- Trap: chmod 444 . from inside d locked me out; chmod 755 . then failed. Fix was cd to parent and chmod 755 d.
