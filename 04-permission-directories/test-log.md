@@ -53,3 +53,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - echo more >> own.txt: Permission denied (file is 644, group bfs has r--). Ubuntu allowed it (664).
 - After sudo chgrp: labreader labreader, append denied (other r--).
 - Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
+
+### 04-D umask (Ubuntu, 2026-10-21)
+- umask 0002: new file 664.
+- umask 077: file 600, dir 700. umask 022: file 644, dir 755.
+- Files start from 666, directories from 777; umask clears bits. Rocky default not yet checked.
