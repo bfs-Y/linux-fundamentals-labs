@@ -19,3 +19,9 @@ renameat2(AT_FDCWD, "r2.txt", 3, "r2.txt", RENAME_NOREPLACE) = -1 EXDEV (Invalid
 unlinkat(3, "r2.txt", 0)                = -1 ENOENT (No such file or directory)
 unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 +++ exited with 0 +++
+
+### 04-A Rocky 10 (2026-10-21)
+- Same results as Ubuntu: mv same-fs keeps inode (68470084); cp new inode; cp -p keeps mtime; cross-fs mv gets EXDEV then copy + unlink.
+- dir 555 + file 664: rm "Permission denied".
+- SELinux: ls -ldZ ~/lab04 -> unconfined_u:object_r:user_home_t:s0.
+- mv d.txt /dev/shm kept user_home_t. New file and plain cp in /dev/shm got user_tmp_t. So mv kept the source context, cp used the destination default (one run; mechanism not traced).
