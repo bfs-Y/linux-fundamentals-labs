@@ -47,3 +47,9 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - echo more >> own.txt: Permission denied (file is 644, group bfs has r--). Ubuntu allowed it (664).
 - After sudo chgrp: labreader labreader, append denied (other r--).
 - Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
+
+### 04-C Rocky chown/chgrp (2026-10-21)
+- Plain chown: Operation not permitted. sudo chown: labreader bfs, context unchanged (user_home_t).
+- echo more >> own.txt: Permission denied (file is 644, group bfs has r--). Ubuntu allowed it (664).
+- After sudo chgrp: labreader labreader, append denied (other r--).
+- Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
