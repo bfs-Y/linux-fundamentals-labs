@@ -41,3 +41,9 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 ### 04-C group rule (Ubuntu, 2026-10-21)
 - Owner chgrp adm g.txt: worked (owner is in adm). chgrp labreader g.txt: Operation not permitted (owner not in labreader).
 - Owner change: root only. Group change: root, or owner to a group they belong to.
+
+### 04-C Rocky chown/chgrp (2026-10-21)
+- Plain chown: Operation not permitted. sudo chown: labreader bfs, context unchanged (user_home_t).
+- echo more >> own.txt: Permission denied (file is 644, group bfs has r--). Ubuntu allowed it (664).
+- After sudo chgrp: labreader labreader, append denied (other r--).
+- Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
