@@ -63,3 +63,11 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Rocky umask 0022: new file 644 (-rw-r--r--.). Ubuntu 0002 gives 664.
 - This explains the chown lab difference: Rocky group had r-- only, Ubuntu group had rw-.
 - Ubuntu terminal showed 0022 after my own umask 022 experiment in the same shell; a new terminal should show 0002.
+
+### 04-E ACL mask (Ubuntu, 2026-10-21)
+- Before chmod 600: -rw-r-----+, labreader reads the file.
+- After chmod 600: -rw-------+, getfacl: user:labreader:r-- #effective:---, group::r-- #effective:---, mask::---. labreader blocked.
+- chmod on an ACL file sets the mask, which caps named-user and group entries.
+- Fix: setfacl -m m::r-- -> mask::r--, labreader reads again, ls -l shows -rw-r-----+.
+- fix/02 script left labreader (created by hand, no .created-labreader marker) and removed /tmp/aclcase.
+- Tell: "+" in ls -l. Run getfacl before concluding.
