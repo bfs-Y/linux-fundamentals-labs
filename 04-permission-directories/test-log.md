@@ -71,3 +71,9 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Fix: setfacl -m m::r-- -> mask::r--, labreader reads again, ls -l shows -rw-r-----+.
 - fix/02 script left labreader (created by hand, no .created-labreader marker) and removed /tmp/aclcase.
 - Tell: "+" in ls -l. Run getfacl before concluding.
+
+### 04-E ACL mask (Rocky, 2026-10-21)
+- Same as Ubuntu: after chmod 600, getfacl shows labreader r-- #effective:---, mask::---. labreader blocked.
+- ls -lZ before fix: unconfined_u:object_r:user_tmp_t:s0. Not re-checked after fix.
+- Fix script set mask::r--, labreader read again, ls -l -rw-r-----+. Left labreader in place (no marker), removed /tmp/aclcase.
+- Not tested on Rocky: the userdel path for a script-created labreader.
