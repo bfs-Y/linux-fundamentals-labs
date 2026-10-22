@@ -18,7 +18,7 @@ The kernel picks one class only: owner, else group, else other. Ubuntu's umask i
 
 5. `umask 077`: what modes do a new file and a new directory get?
 
-File 600 and directory 700. Files created by `touch` or `echo >` start from 666 and directories from 777, and umask clears bits. `cp` starts from the source file's mode instead, then applies the umask, unless `-p` is used. That is why files never get `x` from umask. I only changed it in one shell, and I did not prove that a systemd service uses its own value.
+File 600 and directory 700. Files created by `touch` or `echo >` start from 666 and directories from 777, and umask clears bits. `cp` starts from the source file's mode instead, then applies the umask, unless `-p` is used. Files made by `touch` or `echo >` never get `x` from umask because 666 has no `x` bit, but a `cp` of an executable keeps its `x` bits. I only changed it in one shell, and I did not prove that a systemd service uses its own value.
 
 6. `chmod 600` on a file shared through an ACL stops a service account reading it, and `ls -l` looks normal. Why?
 
