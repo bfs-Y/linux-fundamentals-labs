@@ -108,3 +108,7 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - p4.txt 666, plain cp under umask 077 -> p5.txt 600. New file mode = source mode masked by umask.
 - Earlier p1 (600) under umask 0002 stayed 600 because the umask removed nothing.
 - cp -p under umask 077 not yet tested.
+
+### 04-A cp -p vs umask (Ubuntu, 2026-10-22)
+- p4.txt 666, cp -p under umask 077 -> p6.txt 666. cp -p sets mode explicitly and bypasses the umask.
+- Plain cp under the same umask gave 600. Ownership with -p not tested (same user).
