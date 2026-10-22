@@ -88,3 +88,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Fix: chmod 640 repaired the file; a new file under umask 027 was -rw-r-----, readable by labreader.
 - chmod fixes one file, umask fixes what the process creates next.
 - Script created and removed labreader (marker present). userdel warnings were harmless.
+
+### 04-H wrong config ownership (Ubuntu, 2026-10-22)
+- Break: /etc/drilltest.conf root:root 600 -> labreader Permission denied.
+- Fix: root:labreader 640 -> labreader can read, cannot write.
+- Script created and removed labreader (marker present). userdel warnings harmless.
