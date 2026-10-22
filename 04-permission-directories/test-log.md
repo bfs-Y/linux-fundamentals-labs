@@ -103,3 +103,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - p1.txt 600. Plain cp p2.txt: mode 600, new mtime. cp -p p3.txt: mode 600, mtime identical to source.
 - Plain cp copied the source mode (umask 0002 masks nothing here). -p visibly added only the mtime.
 - Ownership not tested (same user). Umask vs source-mode distinction not yet shown.
+
+### 04-A cp and umask (Ubuntu, 2026-10-22)
+- p4.txt 666, plain cp under umask 077 -> p5.txt 600. New file mode = source mode masked by umask.
+- Earlier p1 (600) under umask 0002 stayed 600 because the umask removed nothing.
+- cp -p under umask 077 not yet tested.
