@@ -98,3 +98,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - ls -ld ~/lab04/d from the full path worked (resolved via parent x).
 - cd d at 444 from outside: Permission denied.
 - x on a directory is needed to resolve any name in it, "." included. Fix by chmod from the parent path.
+
+### 04-A cp mode vs mtime (Ubuntu, 2026-10-22)
+- p1.txt 600. Plain cp p2.txt: mode 600, new mtime. cp -p p3.txt: mode 600, mtime identical to source.
+- Plain cp copied the source mode (umask 0002 masks nothing here). -p visibly added only the mtime.
+- Ownership not tested (same user). Umask vs source-mode distinction not yet shown.
