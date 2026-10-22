@@ -1,5 +1,7 @@
 #!/bin/bash
 # 04-permission-directories/break/03-directory-execute-removed.sh
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
 #
 # A folder loses its execute bit. The file inside is still readable by
 # everyone and ls still lists its name, but nobody else can open it.

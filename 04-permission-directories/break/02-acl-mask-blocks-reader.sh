@@ -1,5 +1,7 @@
 #!/bin/bash
 # 04-permission-directories/break/02-acl-mask-blocks-reader.sh
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
 #
 # A service account gets read access through an ACL. Then a "tighten the
 # permissions" step runs chmod 600, and the ACL entry stops working while

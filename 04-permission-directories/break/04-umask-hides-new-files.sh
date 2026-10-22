@@ -1,5 +1,7 @@
 #!/bin/bash
 # 04-permission-directories/break/04-umask-hides-new-files.sh
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
+# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
 #
 # A script creates a config file for another account in the same group,
 # but it runs with umask 077, so the file starts at mode 600 and the

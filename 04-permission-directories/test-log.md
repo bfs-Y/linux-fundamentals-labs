@@ -48,12 +48,6 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - After sudo chgrp: labreader labreader, append denied (other r--).
 - Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
 
-### 04-C Rocky chown/chgrp (2026-10-21)
-- Plain chown: Operation not permitted. sudo chown: labreader bfs, context unchanged (user_home_t).
-- echo more >> own.txt: Permission denied (file is 644, group bfs has r--). Ubuntu allowed it (664).
-- After sudo chgrp: labreader labreader, append denied (other r--).
-- Difference is default mode (Rocky 644, Ubuntu 664), probably umask; not yet checked.
-
 ### 04-D umask (Ubuntu, 2026-10-21)
 - umask 0002: new file 664.
 - umask 077: file 600, dir 700. umask 022: file 644, dir 755.
@@ -94,7 +88,7 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Fix: root:labreader 640 -> labreader can read, cannot write.
 - Script created and removed labreader (marker present). userdel warnings harmless.
 
-### 04-H wrong config ownership (Ubuntu, 2026-10-22)
-- Break: /etc/drilltest.conf root:root 600 -> labreader Permission denied.
-- Fix: root:labreader 640 -> labreader can read, cannot write.
-- Script created and removed labreader (marker present). userdel warnings harmless.
+### 04-F directory execute removed (Ubuntu, 2026-10-21)
+- dir 755: labreader reads file. After chmod 744: ls lists file.txt, ls -l shows -????????? and Permission denied, cat denied.
+- Owner keeps x, so it breaks only for other users.
+- Fix: chmod 755 restored access. Script removed /tmp/dirlab, left labreader.
