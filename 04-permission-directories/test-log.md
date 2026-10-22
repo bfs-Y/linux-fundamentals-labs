@@ -93,3 +93,8 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - Break: /etc/drilltest.conf root:root 600 -> labreader Permission denied.
 - Fix: root:labreader 640 -> labreader can read, cannot write.
 - Script created and removed labreader (marker present). userdel warnings harmless.
+
+### 04-H wrong config ownership (Ubuntu, 2026-10-22)
+- Break: /etc/drilltest.conf root:root 600 -> labreader Permission denied.
+- Fix: root:labreader 640 -> labreader can read, cannot write.
+- Script created and removed labreader (marker present). userdel warnings harmless.
