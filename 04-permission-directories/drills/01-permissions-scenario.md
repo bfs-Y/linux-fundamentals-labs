@@ -31,3 +31,15 @@ On a file with an ACL, the group bits in `chmod` set the mask, which caps named-
 8. On Rocky, does `mv` into `/dev/shm` keep the SELinux label?
 
 In one test `mv` kept `user_home_t`, while a new file and a plain `cp` got `user_tmp_t`. I did not trace why `mv` kept it, and I did not test a service reading the moved file.
+
+9. A service account is refused its config in `/etc`, and `ls -l` shows a normal `-rw-------`. What is the smallest fix?
+
+The file was `root:root 600`, so `labreader` got "Permission denied". I changed it to `root:labreader 640`: the service can read it, cannot write it, and root stays the owner. I did not chown the file to the service or open it to everyone.
+
+10. A directory was changed from 755 to 744. The file inside is still 644, but another user's `ls -l` shows `-?????????` and `cat` fails. Why?
+
+That user falls in the "other" class, which now has `r` but no `x`. `r` lists the names, and `x` is needed to read details or open anything. The owner kept `x`, so it only broke for other accounts. `chmod 755` on the directory fixed it.
+
+11. A script created a config under `umask 077` and set the right group, but the group can't read it. What do you change, and what do you change to stop it recurring?
+
+The mode was 600, so the group got nothing even though `ls -l` showed the right group. `chmod 640` fixed the existing file. A file made under `umask 027` came out `640`, so the umask in the writing script fixes the next one. I did not test what umask a systemd service gets.
