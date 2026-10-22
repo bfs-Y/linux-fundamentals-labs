@@ -82,3 +82,9 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - d=444: ls d shows f.txt but cannot access d/f.txt; cat d/f.txt Permission denied.
 - d=111: ls d denied; cat d/f.txt prints hello.
 - Same as Ubuntu. Always chmod the directory from its parent, never "chmod ." from inside.
+
+### 04-G umask hides new files (Ubuntu, 2026-10-22)
+- Break: file created under umask 077 -> -rw------- group labreader. labreader: Permission denied.
+- Fix: chmod 640 repaired the file; a new file under umask 027 was -rw-r-----, readable by labreader.
+- chmod fixes one file, umask fixes what the process creates next.
+- Script created and removed labreader (marker present). userdel warnings were harmless.
