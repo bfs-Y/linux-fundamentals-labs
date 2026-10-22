@@ -92,3 +92,9 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 - dir 755: labreader reads file. After chmod 744: ls lists file.txt, ls -l shows -????????? and Permission denied, cat denied.
 - Owner keeps x, so it breaks only for other users.
 - Fix: chmod 755 restored access. Script removed /tmp/dirlab, left labreader.
+
+### 04-I why chmod . fails inside a 444 directory (Ubuntu, 2026-10-22)
+- Entered d at 755, ran chmod 444 . (succeeded), then stat . -> "cannot statx '.': Permission denied".
+- ls -ld ~/lab04/d from the full path worked (resolved via parent x).
+- cd d at 444 from outside: Permission denied.
+- x on a directory is needed to resolve any name in it, "." included. Fix by chmod from the parent path.
