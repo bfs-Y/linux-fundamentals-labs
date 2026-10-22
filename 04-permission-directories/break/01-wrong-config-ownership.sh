@@ -1,7 +1,6 @@
 #!/bin/bash
 # 04-permission-directories/break/01-wrong-config-ownership.sh
 # Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
-# Run ONE break/fix pair at a time. The fix deletes labreader if this script created it.
 #
 # A config file under /etc is owned by root with mode 600, so the service
 # account that has to read it is refused. No attacker, just a common
