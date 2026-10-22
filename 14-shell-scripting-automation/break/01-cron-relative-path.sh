@@ -1,12 +1,13 @@
 #!/bin/bash
-# 04-permission-directories/break/05-cron-relative-path.sh
+# 14-shell-scripting-automation/break/01-cron-relative-path.sh
+# Run ONE break/fix pair at a time. This leaves a cron job running every minute until the fix runs.
 #
 # A cron job reads its config by a relative path. By hand, from the
 # config's folder, it works. Under cron the job starts in the account's
 # home folder, the file isn't there, and the error text isn't anywhere I'd
 # normally look. ls -l on the config looks fine the whole time.
 # Needs sudo. Leaves the job running every minute until
-# fix/05-cron-absolute-path.sh runs.
+# fix/01-cron-absolute-path.sh runs.
 
 set -u
 

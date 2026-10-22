@@ -1,7 +1,7 @@
 #!/bin/bash
-# 04-permission-directories/fix/05-cron-absolute-path.sh
+# 14-shell-scripting-automation/fix/01-cron-absolute-path.sh
 #
-# Fix for break/05-cron-relative-path.sh. cron starts the job in the
+# Fix for break/01-cron-relative-path.sh. cron starts the job in the
 # account's home folder, so a relative path to the config points at a
 # file that isn't there. The fix is an absolute path, and the job's
 # output goes into a file so the next failure shows up somewhere.
@@ -14,7 +14,7 @@ set -u
 
 DIR=/tmp/cronlab
 
-[ -f "$DIR/app.conf" ] || { echo "$DIR/app.conf not found. Run break/05 first."; exit 1; }
+[ -f "$DIR/app.conf" ] || { echo "$DIR/app.conf not found. Run break/01 first."; exit 1; }
 id labreader >/dev/null 2>&1 || { echo "labreader doesn't exist."; exit 1; }
 
 echo "What the job sees when it starts in labreader's home folder:"
