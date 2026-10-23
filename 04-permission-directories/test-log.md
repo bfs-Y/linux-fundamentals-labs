@@ -112,3 +112,7 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 ### 04-A cp -p vs umask (Ubuntu, 2026-10-22)
 - p4.txt 666, cp -p under umask 077 -> p6.txt 666. cp -p sets mode explicitly and bypasses the umask.
 - Plain cp under the same umask gave 600. Ownership with -p not tested (same user).
+
+### 04-A cp keeps x bits (Ubuntu, 2026-10-22)
+- s.sh 755, cp under umask 022 -> s2.sh 755. cp of an executable keeps its x bits.
+- Same file under umask 077 -> s3.sh 700. Source mode carried over, then masked by umask.
