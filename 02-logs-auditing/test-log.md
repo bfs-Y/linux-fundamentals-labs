@@ -406,3 +406,4 @@ no logtest mounts left
 - After boot: marker found in journalctl -b -1 (01:30:53, last second of that boot).
 - last -x: reboot at 01:31 with no preceding shutdown line.
 - .journal~ count after crash: 4 (no count taken before, so the crash's contribution is unknown).
+- Rocky .journal~ files dated 2026-10-23: system@...journal~ 01:29 (24 MiB, larger than the usual 8 MiB, cause not checked) and user-1000@...journal~ 01:30. The other two (2026-10-08) predate the crash.
