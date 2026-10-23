@@ -400,3 +400,9 @@ $ sudo rm -f /tmp/logtest.img
 $ rm -rf /tmp/rotatelab
 $ df -h | grep logtest || echo "no logtest mounts left"
 no logtest mounts left
+
+### Rocky crash test (2026-10-23)
+- logger marker CRASHTEST-ROCKY, sync, then virsh destroy rocky10 (snapshot pre-crash first).
+- After boot: marker found in journalctl -b -1 (01:30:53, last second of that boot).
+- last -x: reboot at 01:31 with no preceding shutdown line.
+- .journal~ count after crash: 4 (no count taken before, so the crash's contribution is unknown).
