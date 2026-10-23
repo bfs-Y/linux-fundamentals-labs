@@ -69,3 +69,51 @@
 - The status file's mtime is just the last dpkg run. Who and when came from the sudo journal.
 - I pasted template blanks (`VERSION`, `____`) into the terminal twice. sudo logged them. Read before pasting.
 - I ran a Rocky block on the Ubuntu box. Check the prompt first.
+
+## 2026-10-22 - Module 04
+
+- Deleting a file removes a name from a directory, so the directory's
+  `w` and `x` decide it, not the file's mode. A 555 directory blocked
+  `rm` on a 664 file. A 000 file in a 755 directory only gave a
+  "write-protected" prompt.
+- A folder's `r` lists names and `x` reaches them. With `r` only, `ls`
+  printed the name and `ls -l` printed `?` for everything else. With `x`
+  only, I could open a file by name but not list the folder. I locked
+  myself out by running `chmod 444 .` from inside a folder: without `x`
+  even `.` can't be resolved (`stat .` failed). I fixed it from the
+  parent with the full path.
+- `chown` needs root. `chgrp` works for the owner only to a group they
+  belong to. The kernel uses one class only (owner, else group, else
+  other), so after the owner changed I lost access through the group
+  bits and then through "other".
+- Ubuntu's default umask is 0002 and Rocky's is 0022. That is why the
+  same chown lab let me append on Ubuntu and not on Rocky. I proved the
+  values differ. I don't know why the defaults differ.
+- `umask 077` made a new file 600, so the right group still got nothing.
+  `chmod 640` fixes the one file, and `027` in the writing script fixes
+  the next one, because it gives the group read and keeps everyone else
+  out.
+- `cp` copies the source mode and then applies the umask. `cp -p` ignores
+  the umask and also keeps the mtime. My first test used a umask too
+  loose to show this, so I needed a second one with umask 077. A copy of
+  an executable keeps its `x` bits.
+- `ls -l` doesn't show everything that decides a read. A `+` at the end
+  means an ACL, and with an ACL the group column shows the mask, not the
+  owning group. `chmod 600` set the mask to `---` and cancelled
+  labreader's entry. `getfacl` showed it as `#effective:---`. When an
+  `ls -l` line ends in `+`, run `getfacl` before trusting it.
+- On Rocky, `mv` into `/dev/shm` kept the SELinux label and `cp` took the
+  destination default. I saw it once and did not trace why.
+- Cleanup scripts: on Rocky, `sudo -u` can leave a `systemd --user`
+  process behind, and `userdel` refuses until it ends. The fix scripts
+  now check with `id` that the account is really gone before they say
+  "removed". Don't throw away error output in a cleanup script.
+- I moved the cron pair to module 14. Cron started the job in the
+  account's home folder, so a relative path failed under cron and worked
+  by hand, and the error went nowhere (Ubuntu logged "No MTA installed,
+  discarding output"). That is the environment, not permissions.
+- Mistakes: I pasted template blanks (`VERSION`, `____`) into the
+  terminal, ran a Rocky block on the Ubuntu box, and left most guess
+  lines empty.
+- Still open: why the default umask differs, why `mv` kept the SELinux
+  label, and whether breaks 01, 03 and 04 behave the same on Rocky.
