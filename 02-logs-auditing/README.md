@@ -52,7 +52,7 @@ under `/tmp`, never against the real `/var/log`.
   in `journalctl -b -1`, and the `.journal~` count rose from 22 to 24. The
   two new files are dated 2026-10-17 03:22 and 03:24. `last -x` showed a
   `reboot` with no preceding `shutdown`. This ties `~` files to unclean
-  stops. Not tested: a write with no `sync`, or Rocky, whose journal is
+  stops. Not tested: a write with no `sync`, or a crash on Rocky (volatile out of the box; I created /var/log/journal myself on Oct 7, and a marker survived a clean reboot there).
   volatile by default. Every boot from 2026-08-12 to 2026-10-16 has a matching `shutdown` line and produced no new `~` files; the crash test is the only exception.
 - On Rocky, a root-level append to a full loop filesystem failed even
   though `stat -f` showed free blocks in the reserve. Journal or metadata
