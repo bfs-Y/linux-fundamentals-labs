@@ -54,5 +54,8 @@ under `/tmp`, never against the real `/var/log`.
   `reboot` with no preceding `shutdown`. This ties `~` files to unclean
   stops. Not tested: a write with no `sync`, on either box. Rocky was crash-tested once with the same result: the marker survived and two new `.journal~` files appeared (one 24 MiB, cause not checked).
 - On Rocky, a root-level append to a full loop filesystem failed even
-  though `stat -f` showed free blocks in the reserve. Journal or metadata
-  overhead is a hypothesis; it was not proven.
+  though `stat -f` showed free blocks. Cause found: ext4 holds back
+  `reserved_clusters` (1024 here, equal to the free figure), and root
+  cannot use that pool. Setting it to 0 let the append succeed. Three
+  runs, same result. Not yet compared on Ubuntu, so why its root write
+  worked at 100% is unexplained.
