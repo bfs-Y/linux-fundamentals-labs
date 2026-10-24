@@ -414,3 +414,9 @@ no logtest mounts left
 - echo 0 > reserved_clusters, then root append: exit 0, free 1024 -> 1023.
 - Two reserves: root reserve (2560 blocks, tune2fs) and the kernel's reserved_clusters. Root cannot use the second.
 - Not checked: Ubuntu's reserved_clusters value and why its root write succeeded.
+
+### Ubuntu root write at "100%" full (2026-10-24)
+- Same break script (ext4 loop fs). Ubuntu kernel 7.0.0-38-generic, device loop22.
+- After fill: free=464 available=0. reserved_clusters=256. Root append: exit 0, free 464 -> 463.
+- Rocky (6.12.0-211.66.1.el10_2): reserved_clusters=1024, free=1024, root append failed, 4 runs.
+- Root can write only if free blocks exceed reserved_clusters. Why the pool size differs (kernel version or filesystem size) not tested.
