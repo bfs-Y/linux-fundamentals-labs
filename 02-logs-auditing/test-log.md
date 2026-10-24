@@ -407,3 +407,10 @@ no logtest mounts left
 - last -x: reboot at 01:31 with no preceding shutdown line.
 - .journal~ count after crash: 4 (no count taken before, so the crash's contribution is unknown).
 - Rocky .journal~ files dated 2026-10-23: system@...journal~ 01:29 (24 MiB, larger than the usual 8 MiB, cause not checked) and user-1000@...journal~ 01:30. The other two (2026-10-08) predate the crash.
+
+### Rocky root write at "100%" full (2026-10-24)
+- Loop fs ext4 (mkfs.ext4), 1 KiB blocks. After fill: stat -f Free: 1024, Available: 0. Root append: "No space left on device", on both a new file (app.log, 0 bytes created) and the existing filler.bin. Free inodes 12811, so not an inode problem.
+- /sys/fs/ext4/loop0/reserved_clusters = 1024, equal to the Free figure.
+- echo 0 > reserved_clusters, then root append: exit 0, free 1024 -> 1023.
+- Two reserves: root reserve (2560 blocks, tune2fs) and the kernel's reserved_clusters. Root cannot use the second.
+- Not checked: Ubuntu's reserved_clusters value and why its root write succeeded.
