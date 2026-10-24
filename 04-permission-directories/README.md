@@ -33,7 +33,7 @@ differs.
 ## Structure
 
 - `test-log.md` — dated transcript of commands run and real output
-- `break/` — reproducible faults, all four run on Ubuntu
+- `break/` — reproducible faults, all four run on Ubuntu and Rocky
   - `01-wrong-config-ownership.sh`
   - `02-acl-mask-blocks-reader.sh`
   - `03-directory-execute-removed.sh`
@@ -56,7 +56,7 @@ Break scripts create a `labreader` account and files under `/tmp` or
 
 ## Open items
 
-- Breaks 01, 03 and 04 were run on Ubuntu only. 02 ran on both.
+- Breaks 01 to 04 ran on both distros. SELinux contexts on the Rocky break files were not recorded.
 - Why `mv` kept the SELinux label across filesystems was not traced.
 - A systemd service's umask was not read back; the `systemd-run` test
   sent its output to the journal and was never checked.
