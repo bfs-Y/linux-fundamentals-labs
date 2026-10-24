@@ -116,3 +116,10 @@ unlinkat(AT_FDCWD, "r2.txt", 0)         = 0
 ### 04-A cp keeps x bits (Ubuntu, 2026-10-22)
 - s.sh 755, cp under umask 022 -> s2.sh 755. cp of an executable keeps its x bits.
 - Same file under umask 077 -> s3.sh 700. Source mode carried over, then masked by umask.
+
+### 04-F/G/H break and fix on Rocky 10 (2026-10-24)
+- 01 config ownership: /etc/drilltest.conf root:root 600 -> labreader Permission denied. Fix root:labreader 640 -> read yes, write no.
+- 03 directory execute: chmod 744 -> ls lists file.txt, ls -l shows -????????? and Permission denied. Fix chmod 755 restored access.
+- 04 umask: file created under umask 077 -> 600, labreader blocked. chmod 640 fixed it; new file under umask 027 was 640.
+- Same results as Ubuntu. Scripts created and removed labreader each time (no systemd --user complaint on Rocky).
+- Not checked: ls -lZ, so the SELinux contexts on these files are unrecorded.
