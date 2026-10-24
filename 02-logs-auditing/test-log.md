@@ -420,3 +420,12 @@ no logtest mounts left
 - After fill: free=464 available=0. reserved_clusters=256. Root append: exit 0, free 464 -> 463.
 - Rocky (6.12.0-211.66.1.el10_2): reserved_clusters=1024, free=1024, root append failed, 4 runs.
 - Root can write only if free blocks exceed reserved_clusters. Why the pool size differs (kernel version or filesystem size) not tested.
+
+### Ubuntu root write at "100%" full (2026-10-24)
+- Ubuntu 7.0.0-38, mke2fs 1.47.0, break fs ~43M: reserved_clusters=256, free after fill 464, root append worked (464 -> 463).
+
+### reserved_clusters vs filesystem size (2026-10-24)
+- Clean sweep, fresh image each time (mkfs -F). Ubuntu: 20M=102, 50M=256, 100M=512. Rocky (6.12.0-211, mke2fs 1.47.1): 20M=409, 50M=1024, 100M=2048.
+- Both proportional to size; Rocky is 4x Ubuntu. Cause of the factor (kernel vs mke2fs) not tested.
+- Rocky break fs: pool 1024, free 1024 after fill -> root append failed. Setting pool to 0 let it succeed.
+- An earlier sweep reused an image and gave a false 100M reading; discarded.

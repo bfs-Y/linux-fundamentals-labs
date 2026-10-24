@@ -54,8 +54,8 @@ under `/tmp`, never against the real `/var/log`.
   `reboot` with no preceding `shutdown`. This ties `~` files to unclean
   stops. Not tested: a write with no `sync`, on either box. Rocky was crash-tested once with the same result: the marker survived and two new `.journal~` files appeared (one 24 MiB, cause not checked).
 - A root-level append to a full loop filesystem failed on Rocky and
-  worked on Ubuntu. Cause: ext4 holds back `reserved_clusters` and root
-  cannot use that pool. Rocky: pool 1024, free 1024, append failed (four
-  runs; setting the pool to 0 let it succeed). Ubuntu: pool 256, free
-  464, append worked. Why the pool differs (kernel version or filesystem
-  size) was not tested.
+  worked on Ubuntu. Cause: ext4 holds back reserved_clusters, which root
+  cannot use. The pool is proportional to filesystem size but 4x larger
+  on Rocky (50M: 1024 vs 256). On the break filesystem Rocky had free =
+  pool, so the write failed. Why the factor is 4 (kernel or mke2fs) was
+  not tested.
