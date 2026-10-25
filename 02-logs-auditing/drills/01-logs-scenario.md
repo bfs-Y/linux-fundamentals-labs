@@ -30,11 +30,13 @@ what actually happened, so it's stronger. My test used a clean
 point?**
 
 Not necessarily. `df` shows what a normal user can use, and ext4 holds
-back 5% for root. On Ubuntu, a root write still worked at 100%. On Rocky
-the same write failed even though `stat -f` showed free blocks, and I
-didn't find out why. Trust `stat -f` for the current state. `tune2fs -l`
-reads the superblock on disk and can be out of date while the filesystem
-is mounted.
+back 5% for root. A root write can still fail at 100%: ext4 also keeps
+`reserved_clusters`, which root cannot use. On Rocky it was 1024 and
+equal to the free count, so the write failed. On Ubuntu it was 256 with
+464 free, so it worked. The pool scales with filesystem size and was 4x
+larger on Rocky; I did not test why. Trust `stat -f` for the current
+state. `tune2fs -l` reads the superblock on disk and can be out of date
+while the filesystem is mounted.
 
 **5. A log was rotated, but the program is still writing to the old file
 and the new log stays empty. Why, and what fixes it?**
