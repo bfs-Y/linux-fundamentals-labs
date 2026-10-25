@@ -413,10 +413,11 @@ no logtest mounts left
 - /sys/fs/ext4/loop0/reserved_clusters = 1024, equal to the Free figure.
 - echo 0 > reserved_clusters, then root append: exit 0, free 1024 -> 1023.
 - Two reserves: root reserve (2560 blocks, tune2fs) and the kernel's reserved_clusters. Root cannot use the second.
-- Not checked: Ubuntu's reserved_clusters value and why its root write succeeded.
+- Ubuntu compared: see the Ubuntu entry below.
 
 ### Ubuntu root write at "100%" full (2026-10-24)
 - Ubuntu 7.0.0-38, mke2fs 1.47.0, break fs ~43M: reserved_clusters=256, free after fill 464, root append worked (464 -> 463).
+- Root can write only if free blocks exceed reserved_clusters (Ubuntu 464 > 256; Rocky 1024 = 1024).
 
 ### reserved_clusters vs filesystem size (2026-10-24)
 - Clean sweep, fresh image each time (mkfs -F). Ubuntu: 20M=102, 50M=256, 100M=512. Rocky (6.12.0-211, mke2fs 1.47.1): 20M=409, 50M=1024, 100M=2048.
