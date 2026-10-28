@@ -18,3 +18,10 @@
 - Same as Ubuntu: running loop Groups 1001, log "denied", before and after usermod -aG labdb labreader. id showed 1002(labdb). Fresh sudo -u read worked.
 - Fix restarted the loop: Groups 1001 1002, log "ok". Script removed labreader, labdb and the lab folder, no userdel complaint.
 - ls -l shows the SELinux dot on db.conf. Context not recorded.
+
+## 05-D su vs sudo (Ubuntu, 2026-10-28)
+- sudo -u root env and sudo -i env: both HOME=/root USER=root LOGNAME=root.
+- sudo -u root pwd keeps the caller's directory; sudo -i pwd -> /root (login shell).
+- su root: Authentication failure (root password locked). sudo -i worked: authentication vs authorization.
+- su labreader: HOME=/home/labreader, PWD unchanged. su - labreader: PWD=/home/labreader. PATH identical in all.
+- Not checked: Rocky; whether a profile changes PATH.
