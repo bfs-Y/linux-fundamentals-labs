@@ -8,3 +8,8 @@
 - id labreader showed 1001,1002(labdb). Fresh sudo -u read worked.
 - Fix restarted the loop: Groups 1001 1002, log "ok". Script removed labreader, labdb and the lab folder.
 - No snapshot taken (virsh was run on the VM, not the host).
+
+## 05-C usermod -G without -a (Ubuntu, 2026-10-28)
+- drilluser in audio,video; file video.conf root:video 640 readable. After usermod -G sudo: groups 1001,27(sudo) only, file Permission denied, and sudo granted by mistake.
+- Fix: gpasswd -d drilluser sudo; usermod -aG audio,video. File readable again. Script removed drilluser and /tmp/usermodlab.
+- Rewrote break/fix 01: the old fix re-added sudo, which the original state never had. Run on Ubuntu only (sudo group name; Rocky uses wheel).
