@@ -30,4 +30,4 @@
 - su root worked (password prompt, exit 0): root has a password on Rocky, locked on Ubuntu.
 - sudo -u root / sudo -i: HOME=/root; pwd kept for -u root, /root for -i. Same as Ubuntu.
 - su labreader: HOME=/home/labreader, PWD unchanged, PATH kept the caller's (/home/bfs/.local/bin...). su -: PWD=/home/labreader, PATH=labreader's own.
-- userdel refused after su (process 31023 still running); cleared with loginctl terminate-user.
+- userdel refused right after su (process 31023); a few seconds later no process remained and userdel worked. loginctl terminate-user reported the user was not logged in, so it did nothing.
