@@ -13,3 +13,8 @@
 - drilluser in audio,video; file video.conf root:video 640 readable. After usermod -G sudo: groups 1001,27(sudo) only, file Permission denied, and sudo granted by mistake.
 - Fix: gpasswd -d drilluser sudo; usermod -aG audio,video. File readable again. Script removed drilluser and /tmp/usermodlab.
 - Rewrote break/fix 01: the old fix re-added sudo, which the original state never had. Run on Ubuntu only (sudo group name; Rocky uses wheel).
+
+## 05-B group added after process start (Rocky, 2026-10-28)
+- Same as Ubuntu: running loop Groups 1001, log "denied", before and after usermod -aG labdb labreader. id showed 1002(labdb). Fresh sudo -u read worked.
+- Fix restarted the loop: Groups 1001 1002, log "ok". Script removed labreader, labdb and the lab folder, no userdel complaint.
+- ls -l shows the SELinux dot on db.conf. Context not recorded.
