@@ -31,3 +31,10 @@
 - sudo -u root / sudo -i: HOME=/root; pwd kept for -u root, /root for -i. Same as Ubuntu.
 - su labreader: HOME=/home/labreader, PWD unchanged, PATH kept the caller's (/home/bfs/.local/bin...). su -: PWD=/home/labreader, PATH=labreader's own.
 - userdel refused right after su (process 31023); a few seconds later no process remained and userdel worked. loginctl terminate-user reported the user was not logged in, so it did nothing.
+
+## 05-E sudoers wrong path (Ubuntu, 2026-10-28)
+- Rule /opt/nonexistent/systemctl status ssh: visudo -c "parsed OK". sudo -l -U lists it. Running the real command: "sudo: a password is required".
+- Replaced by hand with /usr/bin/systemctl status ssh: status ran as root, restart refused.
+- Adding --no-pager changed the argument list and sudo refused it: sudoers matches arguments exactly.
+- First fix script misreported "still refused" because it used the exit code (systemctl status exits 3 when inactive). Changed to sudo -n -l.
+- Not run on Rocky.
