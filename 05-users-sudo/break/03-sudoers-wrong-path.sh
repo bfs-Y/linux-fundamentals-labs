@@ -11,7 +11,7 @@ set -u
 RULE=/etc/sudoers.d/labreader
 BAD=/opt/nonexistent/systemctl
 
-[ -e "$RULE" ] && { echo "$RULE exists. Run the fix script first."; exit 1; }
+sudo test -e "$RULE" && { echo "$RULE exists. Run the fix script first."; exit 1; }
 id labreader >/dev/null 2>&1 && { echo "labreader already exists. Not touching it."; exit 1; }
 
 sudo useradd -m -s /bin/bash labreader

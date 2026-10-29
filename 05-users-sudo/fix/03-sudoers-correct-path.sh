@@ -7,7 +7,7 @@
 set -u
 RULE=/etc/sudoers.d/labreader
 
-[ -f "$RULE" ] || { echo "$RULE not found. Run break/03 first."; exit 1; }
+sudo test -f "$RULE" || { echo "$RULE not found. Run break/03 first."; exit 1; }
 id labreader >/dev/null 2>&1 || { echo "labreader doesn't exist."; exit 1; }
 
 REAL=$(command -v systemctl)
