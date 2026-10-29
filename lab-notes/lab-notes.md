@@ -119,3 +119,29 @@
   lines empty.
 - Still open: why the default umask differs, why `mv` kept the SELinux
   label, and whether breaks 01, 03 and 04 behave the same on Rocky.
+
+## 2026-10-29 - Module 05
+
+- What `id` prints is not what a running process can do. After `usermod
+  -aG`, `id labreader` and a fresh `sudo -u labreader` showed the new
+  group, and the loop that was already running still got denied until I
+  restarted it. If someone says "I was added to the group and it still
+  fails", ask when the process started.
+- On Ubuntu, plain `groups` reports the shell I'm in and `groups name`
+  reads the account database, so the two can disagree. I only tested
+  this on Ubuntu.
+- `usermod -G` without `-a` replaces the groups. It dropped the groups
+  the user had, and the user got sudo they weren't meant to have.
+- `visudo -c` checks syntax, not whether the path in the rule exists.
+  Test the rule by running the exact command as the user, and check a
+  new rule with `visudo -cf` before installing it. Sudo matches
+  arguments exactly, so `--no-pager` made the same rule refuse.
+- A plain `[ -e ]` on a file inside a folder I can't enter says the file
+  doesn't exist. `[ -e /root/.bashrc ]` printed 1 and `sudo test -e`
+  printed 0. I think it's the missing `x` bit on the folder from module
+  04, but I didn't check `/root`'s mode. It bit my own break script on
+  Rocky.
+- Ubuntu and Rocky differ again: root's password is locked on Ubuntu and
+  set on Rocky, and `su` without `-` kept my `PATH` on Rocky.
+- Still open: `usermod -G` on Rocky, wildcard rule order, and why
+  `userdel` refused right after `su` on Rocky.
