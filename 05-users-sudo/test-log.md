@@ -38,3 +38,4 @@
 - Adding --no-pager changed the argument list and sudo refused it: sudoers matches arguments exactly.
 - First fix script misreported "still refused" because it used the exit code (systemctl status exits 3 when inactive). Changed to sudo -n -l.
 - Not run on Rocky.
+- Rerun with the sudo -n -l fix script (Ubuntu): ended "labreader can run the one command and cannot restart ssh, removed rule and labreader". /etc/sudoers.d held only README afterwards.
