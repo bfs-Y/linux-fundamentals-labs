@@ -43,5 +43,5 @@
 ## 05-E sudoers wrong path (Rocky, 2026-10-29)
 - Break matched Ubuntu: visudo -c accepted /opt/nonexistent/systemctl, sudo -l listed it, real command: "sudo: a password is required".
 - First fix run failed: /etc/sudoers.d is root-only on Rocky, so [ -f ] as a normal user could not see the rule. Cleaned up by hand with sudo.
-- Scripts changed to sudo test -f / -e. Rerun result: (fill in from the output)
+- Scripts changed to sudo test -f / -e. Rerun result: fix found the rule via sudo test, ended "labreader can run the one command and cannot restart ssh, removed rule and labreader"; id labreader: no such user.
 - Rocky differences: no README in /etc/sudoers.d; defaults include always_set_home and !visiblepw; secure_path has no /usr/local or /snap/bin. Unit is sshd, so "status ssh" names no real unit (the sudo -l match test is unaffected).
