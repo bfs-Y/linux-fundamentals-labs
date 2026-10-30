@@ -8,6 +8,6 @@ The script's output showed it: `id` before listed `29(audio),44(video)`, and aft
 
 On Rocky the admin group is `wheel` (gid 10), and audio and video are 63 and 39. `id` before listed `39(video),63(audio)`, and after `usermod -G wheel` listed `10(wheel)` only. The file returned "Permission denied". The fix used `gpasswd -d` on `wheel` and `usermod -aG audio,video`, and the file was readable again.
 
-The fix was `gpasswd -d drilluser sudo` and `usermod -aG audio,video drilluser`. The first version of my fix script re-added sudo as well, which the original state never had, so I rewrote it to restore only what was taken away.
+On Ubuntu the fix was `gpasswd -d drilluser sudo` and `usermod -aG audio,video drilluser`. The first version of my fix script re-added sudo as well, which the original state never had, so I rewrote it to restore only what was taken away.
 
 For whoever takes over: use `-aG`, never `-G` alone. Run `id` before and after any group change, and when a user loses access, check whether the change also added a privilege.
