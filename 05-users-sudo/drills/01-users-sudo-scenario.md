@@ -10,7 +10,7 @@ A process keeps the groups it started with. In my lab `id labreader` read the da
 
 3. What does `usermod -G sudo user` do, and what is the correct command?
 
-Without `-a` it replaces all supplementary groups. `drilluser` went from `audio,video` to `sudo` only, lost access to a `video` file, and gained sudo. The right command is `usermod -aG`. The fix removed sudo and restored `audio,video`. Tested on Ubuntu only, since Rocky's group is `wheel`.
+Without `-a` it replaces all supplementary groups. `drilluser` went from `audio,video` to `sudo` only, lost access to a `video` file, and gained sudo. The right command is `usermod -aG`. The fix removed sudo and restored `audio,video`. Ran on both: the script picks `sudo` on Ubuntu and `wheel` on Rocky, and the groups were replaced the same way (Rocky: `video(39),audio(63)` became `wheel(10)` only).
 
 4. What is the difference between `sudo -u root`, `sudo -i`, `su` and `su -`?
 
