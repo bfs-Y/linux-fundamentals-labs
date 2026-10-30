@@ -143,5 +143,5 @@
   Rocky.
 - Ubuntu and Rocky differ again: root's password is locked on Ubuntu and
   set on Rocky, and `su` without `-` kept my `PATH` on Rocky.
-- Still open: `usermod -G` on Rocky, wildcard rule order, and why
-  `userdel` refused right after `su` on Rocky.
+- Still open: wildcard rule order, and why `userdel` refused right after
+  `su` on Rocky.

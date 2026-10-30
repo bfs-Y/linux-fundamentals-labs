@@ -18,8 +18,9 @@ will never match anything.
   change printed the old groups, and `groups labreader` printed the new
   ones.
 - `usermod -G` without `-a` replaces the supplementary groups instead of
-  adding one. Ubuntu only. On Rocky the admin group is `wheel`, so I
-  didn't run it there.
+  adding one. The admin group is `sudo` on Ubuntu and `wheel` on Rocky,
+  so the script picks whichever exists. It dropped `audio` and `video`
+  the same way on both.
 - `su` against `sudo`. `sudo -i` starts in `/root` and `sudo -u root`
   keeps my folder. `su labreader` keeps my folder, and `su - labreader`
   goes to the account's home. On Rocky, `su` without `-` also kept my
@@ -44,7 +45,6 @@ will never match anything.
 
 ## Not finished
 
-- I didn't run `01-usermod-missing-a-flag.sh` on Rocky.
 - I didn't test a wildcard rule overriding a later rule, or the `sshd`
   unit name on Rocky (the rule says `ssh`).
 - I didn't check whether a profile changes `PATH` under `su`.

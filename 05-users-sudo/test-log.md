@@ -45,3 +45,10 @@
 - First fix run failed: /etc/sudoers.d is root-only on Rocky, so [ -f ] as a normal user could not see the rule. Cleaned up by hand with sudo.
 - Scripts changed to sudo test -f / -e. Rerun result: fix found the rule via sudo test, ended "labreader can run the one command and cannot restart ssh, removed rule and labreader"; id labreader: no such user.
 - Rocky differences: no README in /etc/sudoers.d; defaults include always_set_home and !visiblepw; secure_path has no /usr/local or /snap/bin. Unit is sshd, so "status ssh" names no real unit (the sudo -l match test is unaffected).
+
+## 05-C usermod -G without -a (Rocky, 2026-10-30)
+- getent group sudo wheel audio video: wheel:x:10:bfs, audio:x:63:, video:x:39:. There is no sudo group (exit 2). The numbers differ from Ubuntu (audio 29, video 44).
+- The script now picks sudo or wheel. Before: groups 1001(drilluser),39(video),63(audio). After usermod -G wheel drilluser (no -a): groups 1001(drilluser),10(wheel). Reading video.conf: Permission denied.
+- Fix: gpasswd -d wheel and usermod -aG audio,video put the groups back, and the file was readable. userdel worked, id said no such user, and the lab folder was gone.
+- The fix printed only Before, After and RESULT, so loginctl and userdel printed nothing. The fix had just run sudo -u, so I think the user manager was still running. That is a guess from the line count.
+- Ubuntu rerun, same day: sudo was picked (wheel doesn't exist) and the result matched 2026-10-28.
