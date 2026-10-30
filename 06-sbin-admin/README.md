@@ -4,10 +4,11 @@ Admin commands that usually need root. Core tools for managing users, network, f
 
 ## The Split
 
-/bin - Regular user commands (ls, cat, grep)
-/sbin - System admin commands (useradd, ifconfig, fsck)
-
-Both available in emergency shell. Both critical for recovery.
+On both of my VMs /bin is a symlink to usr/bin and /sbin is a symlink to
+usr/sbin, so they are the same folders under two names. The split is a
+convention: bin for everyday commands, sbin for admin ones. useradd, fsck
+and mkfs.ext4 are in /usr/sbin on both VMs. I haven't tested what is
+available in an emergency shell.
 
 ## What's in /sbin
 
@@ -17,7 +18,7 @@ Both available in emergency shell. Both critical for recovery.
 - passwd (sometimes here, sometimes /bin)
 
 **Network:**
-- ip, ifconfig, route
+- ip, ifconfig, route (ifconfig was in /usr/sbin on Rocky and missing on Ubuntu; I didn't check route)
 - iptables, ip6tables
 - arp
 
