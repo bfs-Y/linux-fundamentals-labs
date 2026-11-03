@@ -1,4 +1,4 @@
-# 06 - Sbin Admin: Day 1 Drill (identity and kernel)
+# 06 - Sbin Admin: Identity and Kernel
 
 Scenario: a server with no GUI and no documentation. Who is this machine and what is it running on?
 
