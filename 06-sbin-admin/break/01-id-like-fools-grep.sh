@@ -32,7 +32,7 @@ echo "Wrong test: grep -c $FAMILY $COPY -> $N"
 grep -n "$FAMILY" "$COPY"
 
 if [ "$N" -gt 0 ]; then
-    echo "RESULT: the test says this is $FAMILY, but the matching line is only the family list"
+    echo "RESULT: the test says this is $FAMILY, but that word also appears in lines that are not the ID field"
 else
     echo "RESULT: no match, nothing broken here"
 fi
