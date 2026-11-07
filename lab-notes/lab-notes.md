@@ -145,3 +145,29 @@
   set on Rocky, and `su` without `-` kept my `PATH` on Rocky.
 - Still open: wildcard rule order, and why `userdel` refused right after
   `su` on Rocky.
+
+## 2026-11-07 - Module 06
+
+- An empty or short result is not "nothing there". `dmesg` on Rocky
+  printed "Operation not permitted" while my `grep` on it printed
+  nothing, and `ss -ltn` had an empty owner column until I used `sudo`.
+  Run the command bare before trusting a filter. A `tail -n 8` on `du`
+  hid `/swap.img`, 3.9G, so my total looked 4G short.
+- Tools read `/proc` and `/sys`, often with relative paths. `strace`
+  showed `lscpu` opening `cpuinfo` as `openat(4, "cpuinfo")`, so my
+  full-path filter missed it. `ps` opens `/proc/<pid>/stat`. I only
+  traced a few tools.
+- `ID_LIKE` fools a plain grep. `grep -c debian` printed 1 on Ubuntu and
+  `grep -c fedora` printed 2 on Rocky. Test the `ID` line, and allow for
+  quotes, because Rocky has `ID="rocky"`. I never tested a machine that
+  really is the distro being tested.
+- Ubuntu starts `ssh` through `ssh.socket` (systemd held port 22), Rocky
+  runs `sshd`, and Rocky's 9090 is also held by `systemd`. A listener on
+  all addresses does not show it is reachable, and I did not check
+  `firewalld`.
+- Ubuntu and Rocky differ again: `sudo` against `wheel`, swap file
+  against LVM swap, `cron` against `crond`, and resolver stub against a
+  direct nameserver.
+- Days 6 to 8 of the drills were drafted by me, so they are not earned
+  reps. Still open: Rocky's `df` and `du` gap of 0.8G, whether `dm-1` is
+  `rl-swap`, and why `systemd-resolved` crashed on Nov 4.
