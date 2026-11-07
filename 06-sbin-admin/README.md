@@ -56,4 +56,3 @@ look", so I run the command bare before I trust it.
 - Not found out: why Rocky's `df` and `du` differ by about 0.8G,
   whether `/dev/dm-1` is `rl-swap`, and why `systemd-resolved` crashed
   on Nov 4. I could not read the crash report.
-- There is no test-log yet.
