@@ -49,8 +49,6 @@ look", so I run the command bare before I trust it.
 ## Not finished
 
 - I did not time any day.
-- I did not run the bin/sbin check again this module. The old test-log
-  with that run was deleted, and it is in git history.
 - Not found out: why Rocky's `df` and `du` differ by about 0.8G,
   whether `/dev/dm-1` is `rl-swap`, and why `systemd-resolved` crashed
   on Nov 4. I could not read the crash report.
