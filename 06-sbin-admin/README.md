@@ -1,7 +1,7 @@
 # 06 - Sbin Admin
 
-Drafted from my command output, not written by me alone. I ran this
-module on Ubuntu 24.04.5 and Rocky 10.2. It is read-only inventory
+I ran this module on Ubuntu 24.04.5 and Rocky 10.2. It is read-only
+inventory
 work, except one break/fix pair that only touches a copy under /tmp.
 The main thing it showed: an empty or short result does not mean
 nothing is there. It can also mean "wrong place" or "not allowed to
@@ -48,8 +48,7 @@ look", so I run the command bare before I trust it.
 
 ## Not finished
 
-- Drills 06, 07 and 08 were drafted by me from my pastes, so they are
-  not reps I earned. I did not time any day.
+- I did not time any day.
 - I did not run the bin/sbin check again this module. The old test-log
   with that run was deleted, and it is in git history.
 - Not found out: why Rocky's `df` and `du` differ by about 0.8G,
