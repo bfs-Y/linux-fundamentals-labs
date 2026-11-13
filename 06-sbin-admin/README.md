@@ -44,7 +44,7 @@ look", so I run the command bare before I trust it.
   `postmortem/01-id-like-fools-grep.md`: one pair, run on both VMs.
 - `drills/01` to `08`: one per topic, identity and kernel, CPU and
   memory, processes and services, users and sessions, network, storage,
-  scheduled jobs and logs, and the fifteen-minute inventory on Rocky.
+  scheduled jobs and logs, and the fifteen-minute inventory on Ubuntu.
 
 ## Not finished
 

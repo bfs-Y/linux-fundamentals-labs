@@ -168,6 +168,6 @@
 - Ubuntu and Rocky differ again: `sudo` against `wheel`, swap file
   against LVM swap, `cron` against `crond`, and resolver stub against a
   direct nameserver.
-- Days 6 to 8 of the drills were drafted by me, so they are not earned
+- Days 6 and 7 of the drills were drafted by me, so they are not earned
   reps. Still open: Rocky's `df` and `du` gap of 0.8G, whether `dm-1` is
   `rl-swap`, and why `systemd-resolved` crashed on Nov 4.
