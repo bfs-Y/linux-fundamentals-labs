@@ -168,6 +168,10 @@
 - Ubuntu and Rocky differ again: `sudo` against `wheel`, swap file
   against LVM swap, `cron` against `crond`, and resolver stub against a
   direct nameserver.
+- Day 8, my own Ubuntu report. The graded slips were naming commands
+  that were not in that run (swap, `getent passwd`, `/var/crash`, KVM).
+  Name only the command whose output is on screen. The 17 seconds
+  timed a pasted batch, so I still have no real inventory time.
 - Days 6 and 7 of the drills were drafted by me, so they are not earned
   reps. Still open: Rocky's `df` and `du` gap of 0.8G, whether `dm-1` is
-  `rl-swap`, and why `systemd-resolved` crashed on Nov 4.
+  `rl-swap`, and why `systemd-resolved` crashed on Nov 4, and a real timed Day 8.
