@@ -1,25 +1,25 @@
-# 06 - Sbin Admin: Fifteen-Minute Inventory (Rocky)
+# 06 - Sbin Admin: Fifteen-Minute Inventory (Ubuntu)
 
-Drafted from my command output, not written by me alone. I did not time it.
+Elapsed: 17 seconds. The timer measured a pasted batch of commands, so it is not a real inventory time.
 
-Identity: Rocky Linux 10.2 (Red Quartz), kernel 6.12.0-211.69.1.el10_2.x86_64 (`cat /etc/os-release`, `uname -r`). Up 4 days 18:55 with 1 user (`uptime`).
+Identity: `hostname`, `cat /etc/os-release` and `uname -r` showed ubuntulab-Standard-PC-Q35-ICH9-2009, Ubuntu 24.04.5 LTS, kernel 7.0.0-42-generic. `uptime` said up 23 min with 1 user, so the VM had rebooted. I don't know why.
 
-Resources: 2 CPUs (`nproc`), 3.7Gi RAM with 1.9Gi available (`free -h`). Load 0.16, 0.06, 0.01.
+Resources: `nproc` printed 2 and `free -h` showed 3.8Gi RAM with 2.7Gi available. Load was 0.10, 0.03, 0.01. This run did not show swap.
 
-Services: 38 running (`systemctl list-units ... | wc -l`). The failed list printed nothing.
+Services: `systemctl list-units` showed 32 running and nothing failed. I don't know whether all of them are needed.
 
-Critical processes: the biggest memory users were `ptyxis` 9.8%, `gnome-shell` for bfs 8.4% and `gnome-software` 6.8% (`ps`). That shows the biggest, not which ones are critical. I did not check that.
+Critical processes: `ps` showed `gnome-shell` as the largest memory user at 9.7%. That shows the biggest, not the critical ones.
 
-Users: `bfs` on `tty2` since 2026-11-02 10:57 (`who`).
+Users: `who` showed two entries for ubuntulab, `seat0` and `tty2`, both from 2026-11-13 12:59.
 
-Network: `enp1s0` is UP at 192.168.122.28/24 (`ip -br addr`).
+Network: `ip -br addr` showed `enp1s0` UP at 192.168.122.174/24. I don't know whether outside access is restricted.
 
-Listening ports: 22 on all addresses, 631 on loopback only, 9090 on all addresses (`ss -ltn`). Without sudo the owners are hidden. On Day 5, `sudo ss -ltnp` showed `systemd` pid 1 on 9090.
+Listening ports: `ss -ltn` showed 22 and 80 on all addresses, 53 on 127.0.0.53 and 127.0.0.54, and 631 on loopback. I don't know which process owns port 80, because `ss -ltnp` needs `sudo`.
 
-Storage: `/` is xfs, 35G, 17% used, and `/boot` is 960M, 58% used (`df -hT`).
+Storage: `df -hT` showed `/` ext4, 40G, 15G used, 23G free, 40%. This run did not show what uses the space.
 
-Scheduled jobs: timers `fwupd-refresh`, `dnf-makecache`, `logrotate`, `plocate-updatedb` and `raid-check`, with the list cut at 6 lines. `/etc/cron.d` holds `0hourly`. I did not read root's crontab.
+Scheduled jobs: `systemctl list-timers` showed sysstat-collect, anacron, fwupd-refresh, apt-daily and motd-news, cut at 6 lines. I did not check for cron jobs.
 
-Risks: stopping `cockpit.socket` would close the 9090 web port, and stopping `sshd` would cut remote login. I inferred both and did not test them. This is a desktop VM, so stopping `gdm` would likely end the session I'm in.
+Risks: ports 22 and 80 listen on all addresses, and I did not check a firewall. Stopping gdm would likely end my desktop session, and stopping ssh.socket would cut remote login. I inferred both and did not test them.
 
-Needs more investigation: whether `dnf-makecache` is really fixed. The failed list is empty and its timer last ran 04:37 EST, but I did not rerun it. Why `df` and `du` differ by about 0.8G on `/`. What Cockpit serves, and whether `firewalld` lets other machines reach 9090.
+Needs more investigation: which process owns port 80 (needs `sudo ss -ltnp`, ask first). The file in /var/crash and its date. Why the VM rebooted, using `journalctl -b -1`.
