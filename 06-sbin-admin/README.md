@@ -50,5 +50,5 @@ look", so I run the command bare before I trust it.
 
 - I did not time any day.
 - Not found out: why Rocky's `df` and `du` differ by about 0.8G,
-  whether `/dev/dm-1` is `rl-swap`, and why `systemd-resolved` crashed
-  on Nov 4. I could not read the crash report.
+  and why `systemd-resolved` crashed on Nov 4. I could not read the crash
+  report. `ls -l /dev/mapper` showed `rl-swap -> ../dm-1`, so swap is `dm-1`.

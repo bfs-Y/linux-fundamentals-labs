@@ -173,5 +173,6 @@
   Name only the command whose output is on screen. The 17 seconds
   timed a pasted batch, so I still have no real inventory time.
 - Days 6 and 7 of the drills were drafted by me, so they are not earned
-  reps. Still open: Rocky's `df` and `du` gap of 0.8G, whether `dm-1` is
-  `rl-swap`, and why `systemd-resolved` crashed on Nov 4, and a real timed Day 8.
+  reps. Still open: Rocky's `df` and `du` gap of 0.8G, why
+  `systemd-resolved` crashed on Nov 4, and a real timed Day 8. `dm-1` is
+  `rl-swap`: `ls -l /dev/mapper` showed the link.
