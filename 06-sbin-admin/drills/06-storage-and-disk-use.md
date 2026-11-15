@@ -20,4 +20,4 @@ The bare `du` run printed at least six permission-denied messages, all under `/e
 
 5. `/var` was the biggest folder on Ubuntu. What was inside it?
 
-`/var` was 5.5G and `/var/lib` was 4.8G of it. Earlier, `/var/lib/snapd` was 4.5G of that. On the last run `/var/log` was 519M and `/var/cache` 207M, and earlier they were 541M and 173M, so they change between runs.
+`/var` used 5.5G, with `/var/lib` the largest folder inside it at 4.8G. Inside `/var/lib`, `snapd` was the largest at 4.5G, compared with `apt` at 218M and `dpkg` at 64M. `/var/log` was 519M and `/var/cache` 207M on the last run, and 541M and 173M earlier. I did not test what specifically inside `snapd` accounted for the 4.5G, or why `/var/log` and `/var/cache` changed between runs.
