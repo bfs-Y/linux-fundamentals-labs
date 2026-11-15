@@ -8,7 +8,7 @@ Ubuntu uses a 40G virtual disk, `vda`, with `vda1` (1M) and `vda2` (40G), and `/
 
 2. Ubuntu `df` said 15G used, but the top-level `du` I printed added up to about 10.8G. What was missing?
 
-`tail -n 8` had cut off `/swap.img`. `du -xsh /swap.img` printed 3.9G, and 10.8G plus 3.9G is about 14.7G, close to `df`. I did not check the last 0.3G. Separately, used plus available is about 2 GiB short of the 40G total because of the root reserve, see `drills/df.md`.
+`tail -n 8` on Ubuntu's top-level `du` output cut off `/swap.img`, which was a single 3.9G file. The command `du -xsh /swap.img /opt /srv /root` exposed it. The visible directories totalled approximately 10.8G; adding the swap file gives approximately 14.7G, close to the 15G reported by `df -hT`. I did not account for the remaining 0.3G. Separately, used plus available is about 2 GiB short of the 40G total because of the root reserve, see `drills/df.md`.
 
 3. Which swap does each VM use?
 
