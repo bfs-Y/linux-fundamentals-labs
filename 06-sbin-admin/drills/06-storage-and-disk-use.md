@@ -16,7 +16,7 @@ Ubuntu uses `/swap.img`, type `file`, 3.8G. Rocky uses `/dev/dm-1`, type `partit
 
 4. `2>/dev/null` hid errors in `du`. What did the bare run show?
 
-At least six refusals, all under `/etc`, and `/root` was refused too, so its 4.0K is a floor. My guess that refusals explained the missing space was wrong, because the cause was `/swap.img`. I did not test what is inside the refused folders.
+The bare `du` run printed at least six permission-denied messages, all under `/etc`, including `credstore`, `sssd`, `cups/ssl` and `ssl/private`. `head -n 6` cut the list, so there may be more. `/root` was refused too, so its 4.0K is a floor, not a size. These refusals did not explain the gap, because `/swap.img` accounted for most of it. I did not test the contents and actual disk usage of `/root` or `/etc/ssl/private`.
 
 5. `/var` was the biggest folder on Ubuntu. What was inside it?
 
