@@ -172,7 +172,7 @@
   that were not in that run (swap, `getent passwd`, `/var/crash`, KVM).
   Name only the command whose output is on screen. The 17 seconds
   timed a pasted batch, so I still have no real inventory time.
-- I drafted Days 6 and 7 of the drills from my pastes and will redo
-  them myself. Still open: Rocky's `df` and `du` gap of 0.8G, why
+- I drafted Day 7 of the drills from my pastes and will redo it myself.
+  Still open: Rocky's `df` and `du` gap of 0.8G, why
   `systemd-resolved` crashed on Nov 4, and a real timed Day 8. `dm-1`
   is `rl-swap` (`ls -l /dev/mapper`).
