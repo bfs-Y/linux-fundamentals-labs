@@ -4,7 +4,7 @@ Scenario: the same server, no documentation. What disks does it have, what is mo
 
 1. `lsblk -e7` on both VMs: what is the layout, and where does `/` live?
 
-Ubuntu: `vda` is 40G with `vda1` (1M) and `vda2` (40G), and `/` is on `vda2`, ext4. Rocky: `vda` is 40G with `vda1` (1M), `vda2` (1G, `/boot`) and `vda3` (39G), which holds `rl-root` (35G, `/`) and `rl-swap` (4G, `[SWAP]`).
+Ubuntu uses a 40G virtual disk, `vda`, with `vda1` (1M) and `vda2` (40G), and `/` is mounted on `vda2`. The filesystem is ext4, confirmed by `df -hT`, not `lsblk -e7`. Rocky has a separate `/boot` partition, `vda2` (1G), and uses LVM for its root and swap volumes: `rl-root` (35G, `/`) and `rl-swap` (4G, `[SWAP]`) inside `vda3` (39G). I did not verify Rocky's filesystem types in this investigation.
 
 2. Ubuntu `df` said 15G used, but the top-level `du` I printed added up to about 10.8G. What was missing?
 
