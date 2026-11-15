@@ -12,7 +12,7 @@ Ubuntu uses a 40G virtual disk, `vda`, with `vda1` (1M) and `vda2` (40G), and `/
 
 3. Which swap does each VM use?
 
-`swapon --show` printed `/swap.img` (file, 3.8G) on Ubuntu and `/dev/dm-1` (partition, 4G) on Rocky. Both showed 0B used on the last run, but earlier they showed 669.3M and 213.9M. I did not find out why it dropped. I did not test that `/dev/dm-1` is the `rl-swap` volume.
+Ubuntu uses `/swap.img`, type `file`, 3.8G. Rocky uses `/dev/dm-1`, type `partition`, 4G. `ls -l /dev/mapper` showed `rl-swap -> ../dm-1`, so Rocky's swap is the `rl-swap` volume. I did not test why swap usage changed from 669.3M to 0B on Ubuntu and from 213.9M to 0B on Rocky.
 
 4. `2>/dev/null` hid errors in `du`. What did the bare run show?
 
