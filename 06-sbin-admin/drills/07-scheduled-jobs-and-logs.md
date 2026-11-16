@@ -16,7 +16,7 @@ Scenario: the same server, no documentation. What runs on a schedule, and what h
 
 4. Why could I read the journal without `sudo`?
 
-`journalctl -p err -b` printed entries as a normal user, and `id -nG | grep` printed `adm`. I think my `adm` membership is the reason, but I did not test it by running `journalctl` from an account without `adm`.
+`id -nG | grep` showed membership in `adm` (and `lpadmin`, which matched only because "adm" is inside it). As a normal user I could read `journalctl -p err -b`, and `journalctl --disk-usage` printed 530.0M. I think `adm` is the reason, but I have not verified that group membership is the only one. I did not test journal access from an account without `adm`.
 
 5. Nine of about twenty error lines were `gdm-password`. What can I say?
 
