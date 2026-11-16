@@ -8,7 +8,7 @@ Scenario: the same server, no documentation. What runs on a schedule, and what h
 
 2. What did `crontab -l` show, and what can it not show?
 
-`no crontab for ubuntulab`, so my account has no personal jobs. It cannot show root's crontab or `/var/spool/cron`, which I can't read. `/etc/cron.d` held `anacron`, `e2scrub_all` and `sysstat`, and I cut that listing at 12 lines.
+`crontab -l` returned `no crontab for ubuntulab`, so my account has no personal jobs. It does not show root's crontab or the unreadable `/var/spool/cron`. `/etc/cron.d` contained `anacron`, `e2scrub_all` and `sysstat`, but the listing came from `ls /etc/cron.d /etc/cron.daily | head -n 12`, so it was cut at 12 lines. I did not test root's crontab or inspect the contents of the individual `/etc/cron.d` files.
 
 3. Name two timers with their last and next times.
 
