@@ -4,7 +4,7 @@ Scenario: the same server, no documentation. What runs on a schedule, and what h
 
 1. Which scheduler is active on Ubuntu, and why can't `inactive` for `crond` separate "stopped" from "not installed"?
 
-`systemctl is-active cron crond atd` printed `active`, `inactive`, `inactive`, so `cron` runs and `atd` does not. `crond` is the Rocky name, so I think it is not installed on Ubuntu, but the output prints the same word for a stopped unit and a missing one. I did not run `systemctl status crond`.
+`systemctl is-active cron crond atd` showed that `cron` is running, while `crond` and `atd` are inactive. Ubuntu uses the service name `cron`, whereas Rocky uses `crond`, so `inactive` alone does not establish whether `crond` is stopped or not installed. I did not test `systemctl status crond` to distinguish between those two possibilities.
 
 2. What did `crontab -l` show, and what can it not show?
 
