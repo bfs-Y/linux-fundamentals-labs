@@ -12,7 +12,7 @@ Scenario: the same server, no documentation. What runs on a schedule, and what h
 
 3. Name two timers with their last and next times.
 
-`sysstat-collect.timer` last ran 04:40:21 and was next due 04:50:00. `apt-daily-upgrade.timer` last ran Fri 06:53:54 and was next due Sat 06:39:27. I cut the list at 8 lines, so there may be more timers.
+`sysstat-collect.timer` last ran Sat 2026-11-07 at 04:40:21 CST and was next due at 04:50:00 CST. `apt-daily-upgrade.timer` last ran Fri 2026-11-06 at 06:53:54 CST and was next due Sat 2026-11-07 at 06:39:27 CST. So `sysstat-collect` fires far more often, about every ten minutes against about once a day. I did not test the complete timer list; `head -n 8` limited the output, so additional timers may exist.
 
 4. Why could I read the journal without `sudo`?
 
