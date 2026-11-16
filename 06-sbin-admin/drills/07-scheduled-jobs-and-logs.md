@@ -20,7 +20,7 @@ Scenario: the same server, no documentation. What runs on a schedule, and what h
 
 5. Nine of about twenty error lines were `gdm-password`. What can I say?
 
-`grep -c gdm-password` printed 9 and `wc -l` printed 20, which may include a boot header line. The lines named my own account: `auth could not identify password for [ubuntulab]` and `conversation failed`, on Nov 6 and Nov 7. They fit failed or abandoned prompts at the login screen, but I can't tell a wrong password from a screen that timed out. I did not look at the other lines or at `btmp`.
+I cannot conclude it was an attack, and my confidence either way is low because the evidence is insufficient. `wc -l` reported 20 lines, which may include a boot header line, while `grep -c gdm-password` found 9. The entries named `[ubuntulab]` reported authentication identification failures and conversation failures on November 6 and 7. These do not establish whether someone entered a wrong password or a locked-screen authentication attempt timed out. I did not test the other 11 lines or inspect `btmp` for additional login-failure evidence.
 
 6. What did `/var/crash` hold?
 
