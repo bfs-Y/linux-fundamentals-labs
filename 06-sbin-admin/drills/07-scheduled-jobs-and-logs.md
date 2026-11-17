@@ -24,4 +24,4 @@ I cannot conclude it was an attack, and my confidence either way is low because 
 
 6. What did `/var/crash` hold?
 
-One file, `_usr_lib_systemd_systemd-resolved.991.crash`, 756804 bytes, `-rw-r-----` owned by `systemd-resolve`, group `whoopsie`, dated Nov 4 04:29. My `id` shows no `whoopsie` group, so I probably can't read it. I did not try. `systemd-resolved` was `active` when I checked, and I did not find out why it crashed.
+`/var/crash` contained `_usr_lib_systemd_systemd-resolved.991.crash`, sized 756,804 bytes and dated November 4 at 04:29. Its permissions were `-rw-r-----`, owned by `systemd-resolve:whoopsie`, and my `id` output showed no `whoopsie` group membership, so based on the permissions shown I cannot read it as `ubuntulab`. I did not test reading the crash file or investigate why `systemd-resolved` crashed.
