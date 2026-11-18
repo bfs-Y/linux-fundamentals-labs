@@ -1,25 +1,25 @@
 # 06 - Sbin Admin: Fifteen-Minute Inventory (Ubuntu)
 
-Elapsed: 17 seconds. The timer measured a pasted batch of commands, so it is not a real inventory time.
+Time: not measured. The terminal was left open for about 30 hours, so the elapsed figure is not an inventory time.
 
-Identity: `hostname`, `cat /etc/os-release` and `uname -r` showed ubuntulab-Standard-PC-Q35-ICH9-2009, Ubuntu 24.04.5 LTS, kernel 7.0.0-42-generic. `uptime` said up 23 min with 1 user, so the VM had rebooted. I don't know why.
+Identity: `hostnamectl` showed ubuntulab-Standard-PC-Q35-ICH9-2009, Ubuntu 24.04.5 LTS, x86-64, virtualization `kvm`, hardware vendor QEMU. `uname -r` printed 7.0.0-42-generic.
 
-Resources: `nproc` printed 2 and `free -h` showed 3.8Gi RAM with 2.7Gi available. Load was 0.10, 0.03, 0.01. This run did not show swap.
+Resources: `nproc` printed 2. `free -h` showed 3.8Gi RAM, 1.2Gi used, 2.6Gi available, and 3.8Gi swap with 624Ki used. `uptime` said up 3 days 11:31 with load 0.16, 0.07, 0.02.
 
-Services: `systemctl list-units` showed 32 running and nothing failed. I don't know whether all of them are needed.
+Services: 34 running (`systemctl list-units ... | wc -l`). The `--state=failed` query printed nothing. I don't know why the count rose from 32, and `systemctl --failed` would confirm the failed result.
 
-Critical processes: `ps` showed `gnome-shell` as the largest memory user at 9.7%. That shows the biggest, not the critical ones.
+Critical processes: `ps` showed `gnome-shell` as the largest memory user at 10.0%, then `update-manager` at 5.1% memory and 13.0% CPU. That is one snapshot, so I don't know whether the CPU use was sustained.
 
-Users: `who` showed two entries for ubuntulab, `seat0` and `tty2`, both from 2026-11-13 12:59.
+Users: `who` showed two entries for ubuntulab, `seat0` and `tty2`, both from 2026-11-13 12:59. I don't know why that doesn't obviously agree with the uptime.
 
-Network: `ip -br addr` showed `enp1s0` UP at 192.168.122.174/24. I don't know whether outside access is restricted.
+Network: `ip -br addr` showed `enp1s0` UP at 192.168.122.174/24 and `lo` at 127.0.0.1/8.
 
-Listening ports: `ss -ltn` showed 22 and 80 on all addresses, 53 on 127.0.0.53 and 127.0.0.54, and 631 on loopback. I don't know which process owns port 80, because `ss -ltnp` needs `sudo`.
+Listening ports: `ss -ltn` showed 22 and 80 on all addresses (IPv4 and IPv6), and 53 and 631 on loopback only. The usual uses are SSH, HTTP, DNS and CUPS, but I did not check which process holds any of them, because `ss -ltn` shows no owner.
 
-Storage: `df -hT` showed `/` ext4, 40G, 15G used, 23G free, 40%. This run did not show what uses the space.
+Storage: `df -hT` showed `/dev/vda2` ext4, 40G, 15G used, 23G free, 40%. It also showed `/dev/loop22`, ext4, 90M, at /var/tmp/automation-labs/mnt. I don't know what it is for.
 
-Scheduled jobs: `systemctl list-timers` showed sysstat-collect, anacron, fwupd-refresh, apt-daily and motd-news, cut at 6 lines. I did not check for cron jobs.
+Scheduled jobs: `systemctl list-timers` listed 15 timers. The names were cut off in the terminal, but the prefixes match sysstat-collect, fwupd-refresh, anacron, motd-news and apt-daily, plus logrotate, fstrim and man-db. `crontab -l` printed `no crontab for ubuntulab`.
 
-Risks: ports 22 and 80 listen on all addresses, and I did not check a firewall. Stopping gdm would likely end my desktop session, and stopping ssh.socket would cut remote login. I inferred both and did not test them.
+Risks: ports 22 and 80 listen on all addresses and I did not check a firewall. `update-manager` was at 13% CPU. The loop mount's purpose is unknown. I infer, and did not test, that stopping gdm would end my desktop session and stopping ssh.socket would cut remote login.
 
-Needs more investigation: which process owns port 80 (needs `sudo ss -ltnp`, ask first). The file in /var/crash and its date. Why the VM rebooted, using `journalctl -b -1`.
+Needs more investigation: the 32 to 34 service change, `systemctl --failed`, which process owns port 80 (needs `sudo ss -ltnp`, ask first), why `update-manager` used 13% CPU, what `/dev/loop22` is for, and the `who` login time against the uptime.
