@@ -1,8 +1,7 @@
 # 06 - Sbin Admin
 
 I ran this module on Ubuntu 24.04.5 and Rocky 10.2. It is read-only
-inventory
-work, except one break/fix pair that only touches a copy under /tmp.
+inventory work, except one break/fix pair that only touches a copy under /tmp.
 The main thing it showed: an empty or short result does not mean
 nothing is there. It can also mean "wrong place" or "not allowed to
 look", so I run the command bare before I trust it.
@@ -48,7 +47,8 @@ look", so I run the command bare before I trust it.
 
 ## Not finished
 
-- I did not time any day.
-- Not found out: why Rocky's `df` and `du` differ by about 0.8G,
-  and why `systemd-resolved` crashed on Nov 4. I could not read the crash
-  report. `ls -l /dev/mapper` showed `rl-swap -> ../dm-1`, so swap is `dm-1`.
+- I did not time any day. A real timed Day 8 is still open, because my
+  terminal stayed open about 30 hours.
+- Not found out: why Rocky's `df` and `du` differ by about 0.8G, and why
+  `systemd-resolved` crashed on Nov 4. I could not read the crash report.
+- Found: `ls -l /dev/mapper` showed `rl-swap -> ../dm-1`, so swap is `dm-1`.
