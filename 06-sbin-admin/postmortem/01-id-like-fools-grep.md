@@ -10,7 +10,7 @@ The fix script tests the `ID` line only. On Ubuntu it printed `ID line: ID=ubunt
 
 Rocky quotes the value and Ubuntu doesn't. On the real Rocky file, `'^ID="\?rocky"\?$'` printed 1 and `'^ID=rocky$'` printed 0, so a test without the optional quotes misses a line that is there.
 
-The break script's last line said "the matching line is only the family list". On Rocky that was false, because one of the two matches was `LOGO=`. The script counts matches and never checks which lines they were.
+The break script's last line said "the matching line is only the family list". On Rocky that was false, because one of the two matches was `LOGO=`. The script counts matches and never checks which lines they were. I changed the sentence to "that word also appears in lines that are not the ID field" and reran the pair on Rocky, where it printed the new wording and was true: the two matches were line 5 (`ID_LIKE`) and line 10 (`LOGO`).
 
 I did not test the optional-quote pattern against `ID=ubuntu` on Ubuntu. I did not test a machine that really is the distro being tested, so I haven't shown the test says yes when it should. I only touched a copy under `/tmp`, never `/etc/os-release`.
 
