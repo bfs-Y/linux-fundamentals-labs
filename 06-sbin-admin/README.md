@@ -44,6 +44,7 @@ look", so I run the command bare before I trust it.
 - `drills/01` to `08`: one per topic, identity and kernel, CPU and
   memory, processes and services, users and sessions, network, storage,
   scheduled jobs and logs, and the fifteen-minute inventory on Ubuntu.
+- `test-log.md`: the real commands and output behind each entry, one section per topic.
 
 ## Not finished
 
