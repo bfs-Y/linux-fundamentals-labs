@@ -27,7 +27,7 @@
 ## 06-D processes and services (Ubuntu and Rocky, date not recorded)
 - ps -e | wc -l: Ubuntu 236, Rocky 250. Both include the header line. strace showed ps opening /proc/1/stat, status and cmdline.
 - Firefox pid 5357: /proc/5357/status said PPid 1917, and ps listed 1917 as gnome-shell. ps reads /proc too, so this shows two views agreeing, not an independent check.
-- systemctl list-units --state=running: Ubuntu 32, Rocky 38 by wc -l. Failed: Ubuntu 0, Rocky 1 (dnf-makecache.service).
+- systemctl list-units --state=running, first run: Ubuntu 32, Rocky 38 by wc -l. Failed: Ubuntu 0, Rocky 1 (dnf-makecache.service).
 - Ubuntu: ssh inactive, ssh.socket active. sudo ss -ltnp showed systemd pid 1 on port 22, nginx on 80, systemd-resolve on 53, cupsd on 631. Without sudo the Process column was empty.
 - Rocky: sshd holds 22. systemd pid 1 holds 9090 and cockpit.socket is active. Not tested: that this socket holds that exact listener.
 - list-dependencies --reverse: nginx (Ubuntu) and sshd (Rocky) are pulled in only by multi-user.target and graphical.target. That doesn't show they are safe to stop.
@@ -61,7 +61,7 @@
 - 20 lines of errors, 9 from gdm-password naming [ubuntulab]. I can't tell a wrong password from a screen that timed out. I did not look at btmp or the other lines.
 - /var/crash held _usr_lib_systemd_systemd-resolved.991.crash, 756804 bytes, -rw-r----- systemd-resolve:whoopsie, dated Nov 4 04:29. My id has no whoopsie group, so I can't read it. I did not try, and I did not find out why it crashed.
 
-## 06-I fifteen-minute inventory (Ubuntu, 2026-11-13 and later)
+## 06-I fifteen-minute inventory (Ubuntu, date not recorded)
 - First batch of commands ran in 17 seconds because I pasted them together, so that is not a time. The later run left the terminal open about 30 hours. Neither is a real inventory time.
 - Second run: nproc 2, free -h 3.8Gi with 2.6Gi available, uptime up 3 days 11:31, 34 services running, failed list empty, gnome-shell largest at 10.0%, update-manager at 13.0% CPU.
 - df -hT showed a second ext4 mount, /dev/loop22, 90M, at /var/tmp/automation-labs/mnt. I don't know what it is for.
