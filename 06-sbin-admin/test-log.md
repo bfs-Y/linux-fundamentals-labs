@@ -67,3 +67,50 @@
 - df -hT showed a second ext4 mount, /dev/loop22, 90M, at /var/tmp/automation-labs/mnt. I don't know what it is for.
 - First report named commands that were not in that run (swap, getent passwd, /var/crash, KVM). The second report names only commands from its own run.
 - Not done: a real timed run with a stopwatch.
+
+## 06-B follow-up on the open items (Ubuntu, 2026-11-20)
+
+The VM was rebooted at 11:22 today, so these results are from a new boot,
+not the one the inventory ran on.
+
+$ systemctl is-active nginx
+active
+$ sudo ss -ltnp | grep ':80 '
+LISTEN 0 511 0.0.0.0:80 0.0.0.0:* users:(("nginx",pid=1193,fd=5),("nginx",pid=1192,fd=5),("nginx",pid=1191,fd=5))
+LISTEN 0 511 [::]:80 [::]:* users:(("nginx",pid=1193,fd=6),("nginx",pid=1192,fd=6),("nginx",pid=1191,fd=6))
+
+Port 80 is nginx, which I had for the module 03 package work. The apt history
+of Oct 17 shows nginx being downgraded and upgraded, so it was installed
+before then. I didn't check that it is enabled.
+
+$ uptime -s
+2026-11-20 11:22:07
+$ who -b
+         system boot  2026-11-20 11:22
+$ who
+ubuntulab seat0        2026-11-20 11:23 (login screen)
+ubuntulab tty2         2026-11-20 11:23 (tty2)
+
+On this boot the login came one minute after the boot. That fits the
+inventory (login 2026-11-13 12:59 with 3 days 11:31 of uptime) if that
+boot also started about a minute before the login, but I can't check it
+because the VM has rebooted since.
+
+$ findmnt /var/tmp/automation-labs/mnt
+(no output)
+$ losetup -a
+(22 loop devices, loop0 to loop21, each backed by a file in /var/lib/snapd/snaps)
+
+The loop mount from the inventory (/dev/loop22) is gone after the reboot,
+so I still don't know what it was for.
+
+$ systemctl --failed --no-pager
+0 loaded units listed.
+
+$ systemctl list-timers --no-pager --full | head -20
+15 timers listed: anacron, update-notifier-download, sysstat-collect,
+systemd-tmpfiles-clean, apt-daily-upgrade, fwupd-refresh, motd-news,
+man-db, apt-daily, dpkg-db-backup, logrotate, sysstat-summary,
+e2scrub_all, fstrim, update-notifier-motd.
+
+--no-pager --full stopped the unit names from being cut off.

@@ -23,3 +23,5 @@ Scheduled jobs: `systemctl list-timers` listed 15 timers. The names were cut off
 Risks: ports 22 and 80 listen on all addresses and I did not check a firewall. `update-manager` was at 13% CPU. The loop mount's purpose is unknown. I infer, and did not test, that stopping gdm would end my desktop session and stopping ssh.socket would cut remote login.
 
 Needs more investigation: the 32 to 34 service change, `systemctl --failed`, which process owns port 80 (needs `sudo ss -ltnp`, ask first), why `update-manager` used 13% CPU, what `/dev/loop22` is for, and the `who` login time against the uptime.
+
+Follow-up on 2026-11-20, after a reboot, is in the test-log (section 06-B): port 80 is nginx, there are no failed units on that boot, and the loop mount was gone.
